@@ -130,7 +130,7 @@
 			"v3": "I versjon 3 har jeg byttet tilbake til Next.js med Supabase. Jeg ønsket å bruke Next.js igjen for å dra nytte av dets innebygde funksjoner og Supabase for sin brukervennlighet og kraftige funksjoner. Denne overgangen ga meg muligheten til å utforske nye teknologier og forbedre applikasjonens ytelse.",
 			"pros":{
 				"title": "Fordeler med denne stacken",
-				"routing-state": "Fleksibel ruting og state management: TanStack Router og Zustand ga full kontroll over arkitekturen og tilstandshåndtering.",
+				"routing-state": "Fleksibel ruting og state management: Next.js App router og Zustand ga full kontroll over arkitekturen og tilstandshåndtering.",
 				"performance": "Kombinasjonen av Next.js og Supabase sørger for høy ytelse, kjapp innlasting og gjorde håndtering av data veldig lett.",
 				"learning":"Læring og utforskning: Overgangen var en lærerik prosess som utvidet min forståelse av moderne webteknologi."
 			}
