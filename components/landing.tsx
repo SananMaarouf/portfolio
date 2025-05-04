@@ -5,8 +5,6 @@ import { useTranslation } from 'next-i18next';
 
 export default function Landing() {
 const { t } = useTranslation();
-const name = "Sanan Maarouf";
-const nameArray = name.split("");
   return (
     <motion.section
       initial={{ opacity: 0, y: 100 }}
@@ -30,15 +28,8 @@ const nameArray = name.split("");
       >
         <Image src={"/sanan1.webp"} className='mx-auto rounded-full mt-4 md:hidden' alt="Portrait" width={200} height={200} />
         <h2 className="text-4xl mt-4">
-        <span className="text-deco text-pretty">
-          {nameArray.map((letter, index) => (
-            <span
-              key={index}
-              className="inline-block transition-transform duration-200 hover:scale-125"
-            >
-              {letter === " " ? "\u00A0" : letter}
-            </span>
-          ))}
+        <span className="text-deco break-keep">
+          Sanan Maarouf
         </span>
       </h2>
         <h3 className="text-2xl md:text-3xl mt-2">
