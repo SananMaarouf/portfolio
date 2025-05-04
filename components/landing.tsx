@@ -28,20 +28,9 @@ const nameArray = name.split("");
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 0.5 }}
       >
-        <h1 className="text-4xl md:text-5xl ">
-          {t('landing.greeting')}
-          <motion.div
-            className="w-fit inline-block"
-            animate={{ rotate: [0, 20, -20, 0] }}
-            transition={{ repeat: Infinity, repeatDelay: 2 }}
-          >
-            👋🏽
-          </motion.div>
-        </h1>
         <Image src={"/sanan1.webp"} className='mx-auto rounded-full mt-4 md:hidden' alt="Portrait" width={200} height={200} />
-        <h2 className="text-4xl md:text-5xl mt-4">
-        {t("landing.im")}{" "}
-        <span className="text-deco">
+        <h2 className="text-4xl mt-4">
+        <span className="text-deco text-pretty">
           {nameArray.map((letter, index) => (
             <span
               key={index}
