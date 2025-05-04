@@ -128,10 +128,11 @@
 			"title": "My Experience",
 			"v1": "In the first version of the application, I used Next.js and Pocketbase. Pocketbase, a lightweight alternative to Supabase with built-in authentication and an SQLite database, combined with Next.js, a powerful JavaScript framework, made development efficient. Next.js's built-in features for routing, image optimization, and static HTML generation contributed to a productive workflow. However, I decided to challenge myself by rewriting the application without Next.js.",
 			"v2": "In version 2, I chose a stack consisting of Vite, React, TanStack Query/Router, Pocketbase, Hono.js, and Cloudflare Workers. This gave me valuable experience in developing modular applications without a comprehensive framework.",
+			"v3": "In version 3, I transitioned back to Next.js with Supabase. This decision was driven by the need for a more robust solution, especially for authentication and database management. Supabase, a powerful alternative to Firebase, provided a seamless experience with its built-in authentication and PostgreSQL database. Next.js's server-side rendering capabilities and API routes made it easy to integrate with Supabase, allowing for efficient data fetching and management. The combination of Next.js and Supabase offered a comprehensive solution for building modern web applications.",
 			"pros": {
 				"title": "Advantages of This Stack",
-				"routing-state": "Flexible routing and state management: TanStack Router and Zustand provided full control over the architecture and state management.",
-				"performance": "Powerful API with Cloudflare Workers: Using Cloudflare Workers and Hono.js, I was able to create an API for CRUD and authentication features. This resulted in reduced latency and improved global performance.",
+				"routing-state": "Flexible routing and state management: NextJS App router and Zustand provided full control over the architecture and state management.",
+				"performance": "Performance: The combination of Next.js and Supabase ensured fast loading times and efficient data handling.",
 				"learning": "Learning and exploration: The transition was a valuable process that expanded my understanding of modern web technologies."
 			}
 		}

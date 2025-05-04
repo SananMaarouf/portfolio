@@ -25,7 +25,7 @@ export default function ProjectsCarousel() {
 			url: "/projects/applitrack",
 			src: "/projects/applitrack.webp",
 			type: t('projectsTypes.web'),
-			tech: ["React", "Next.js", "TailwindCSS", "PocketBase"],
+			tech: ["React", "Next.js", "TailwindCSS", "SupaBase"],
 		},
 		{
 			number: "O3",

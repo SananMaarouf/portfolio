@@ -52,7 +52,7 @@ export default function Applitrack() {
                             animate={{ scale: [1,1.1,1]}}
                             transition={{ repeat: 3, duration: 2 }}
                             className="w-1/6 text-2xl text-end ">
-                                V2
+                                V3
                         </motion.div>
                     </div>
                 </div>
@@ -89,6 +89,9 @@ export default function Applitrack() {
                         </p>
                         <p>
                             {t("applitrack.experience.v2")}
+                        </p>
+                        <p>
+                            {t("applitrack.experience.v3")}
                         </p>
                     </div>
                 </section>
