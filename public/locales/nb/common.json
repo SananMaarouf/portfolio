@@ -120,7 +120,7 @@
 	},
 	"applitrack": {
 		"description": "Jobbsøknad tracker",
-		"date": "18 august 2024. Oppdatert: Januar 2025",
+		"date": "18 august 2024. Oppdatert: Mai 2025",
 		"intro": "Applitrack er en webapp jeg laget for å spore jobbsøknadene jeg har sendt.",
 		"story": "Jeg laget dette verktøyet fordi jeg pleide å ha et regneark i Google Sheets og Microsoft Excel. Jeg byttet stadig mellom dem og glemte ofte hvilken som var den nyeste. Så jeg laget Applitrack for å se alle søknadene jeg hadde sendt, statusen på dem. Jeg ønsket også å kunne se statistikk over hvor mange søknader jeg hadde sendt, hvor mange jeg hadde fått svar fra og hvor mange jeg hadde fått et intervju fra.",
 		"experience":{

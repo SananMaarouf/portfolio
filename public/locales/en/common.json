@@ -121,7 +121,7 @@
 	},
 	"applitrack":{
 		"description": "Job application tracker",
-		"date": "August 18th, 2024",
+		"date": "August 18th, 2024. Updated: May 2025",
 		"intro": "Applitrack is a webapp i made to track the job applications i have sent.",
 		"story": "I created this tool because i used to have a spreadsheet in Google Sheets and Microsoft Excel. I kept switching between them and often forgot which one was the most recent. So i created Applitrack to see all the applications i had sent, the status of them. I also wanted to be able to see statistics on how many applications i had sent, how many i had gotten a response from and how many i had gotten an interview from.",
 		"experience": {
