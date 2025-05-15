@@ -1,16 +1,17 @@
 import React from "react";
-import { motion } from "motion/react";
 import Image from "next/image";
+import { motion } from "motion/react";
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 
 export async function getStaticProps({ locale }: { locale: string }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale)),
-    },
-  }
+    return {
+        props: {
+            ...(await serverSideTranslations(locale)),
+        },
+    }
 }
 
 
@@ -24,15 +25,9 @@ export default function Applitrack() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
                 className="
-                w-full h-1/2
-                mx-auto my-5 
-                flex flex-col 
-                border-white
-                overflow-hidden 
-                rounded-2xl 
-                border border-transparent
-                bg-transparent 
-                md:w-3/5 lg:w-1/2
+                w-full h-1/2 mx-auto my-5 flex flex-col 
+                border-white overflow-hidden rounded-2xl 
+                border border-transparent bg-transparent md:w-3/5 lg:w-1/2
                 "
             >
                 <div className="w-full font-bold justify-center bg-white text-deco py-2 flex flex-col px-4 pb-2">
@@ -48,17 +43,17 @@ export default function Applitrack() {
                                 {t("applitrack.date")}
                             </p>
                         </div>
-                        <motion.div 
-                            animate={{ scale: [1,1.1,1]}}
+                        <motion.div
+                            animate={{ scale: [1, 1.1, 1] }}
                             transition={{ repeat: 3, duration: 2 }}
                             className="w-1/6 text-2xl text-end ">
-                                V3
+                            V3
                         </motion.div>
                     </div>
                 </div>
 
                 <Image
-                    src={"/images/applitrack/applitrack-dashboard.webp"}
+                    src={"/images/applitrack/at-dashboard.webp"}
                     alt={"applitrack"}
                     width={1000}
                     height={800}
@@ -78,22 +73,39 @@ export default function Applitrack() {
                         {t("applitrack.story")}
                     </p>
                 </section>
-                
+
                 <section className="mx-auto my-5 md:my-10 md:w-3/5 lg:w-1/2">
                     <p className="text-2xl underline">
                         {t("applitrack.experience.title")}:
                     </p>
-                    <div className="space-y-4">
-                        <p className="">
-                            {t("applitrack.experience.v1")}
-                        </p>
-                        <p>
-                            {t("applitrack.experience.v2")}
-                        </p>
-                        <p>
-                            {t("applitrack.experience.v3")}
-                        </p>
-                    </div>
+                    <Accordion type="single" collapsible className="mt-4">
+                        <AccordionItem value="v1">
+                            <AccordionTrigger>V1</AccordionTrigger>
+                            <AccordionContent>
+                                {t("applitrack.experience.v1")}
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="v2">
+                            <AccordionTrigger>V2</AccordionTrigger>
+                            <AccordionContent>
+                                {t("applitrack.experience.v2")}
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="v3">
+                            <AccordionTrigger>V3</AccordionTrigger>
+                            <AccordionContent>
+                                {t("applitrack.experience.v3")}
+                                <Image
+                                    src={"/images/applitrack/at-w-sankey.webp"}
+                                    alt={"applitrack"}
+                                    width={1000}
+                                    height={800}
+                                    className="w-full my-3"
+                                />
+                                {t("applitrack.experience.v3-2")}
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
                 </section>
                 <section className="mx-auto my-5 md:my-10 md:w-3/5 lg:w-1/2">
                     <h2 className="underline text-2xl">{t("applitrack.experience.pros.title")}</h2>

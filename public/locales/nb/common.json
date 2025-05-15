@@ -128,6 +128,7 @@
 			"v1": "I den første versjonen av applikasjonen brukte jeg Next.js og Pocketbase. Pocketbase, et lettvektig alternativ til Supabase med innebygd autentisering og en SQLite-database, sammen med Next.js, et kraftig JavaScript-rammeverk, gjorde utviklingen effektiv. Next.js sine innebygde funksjoner for ruting, bildeoptimalisering og statisk generering av HTML bidro til en produktiv arbeidsflyt. Til tross for dette bestemte jeg meg for å utfordre meg selv ved å skrive om applikasjonen uten Next.js.",
 			"v2": "I versjon 2 valgte jeg en stack bestående av Vite, React, TanStack Query/Router, Pocketbase, Hono.js og Cloudflare Workers. Dette ga meg verdifull erfaring med å utvikle modulære applikasjoner uten et omfattende rammeverk.",
 			"v3": "I versjon 3 har jeg byttet tilbake til Next.js med Supabase. Jeg ønsket å bruke Next.js igjen for å dra nytte av dets innebygde funksjoner og Supabase for sin brukervennlighet og kraftige funksjoner. Denne overgangen ga meg muligheten til å utforske nye teknologier og forbedre applikasjonens ytelse.",
+			"v3-2": "Et nytt tilskudd i denne versjonen var introduksjonen av et Sankey-diagram som visualiserer flyten av jobbsøknadene dine gjennom ulike stadier. Funksjonen gir en tydelig og intuitiv oversikt over fremdriften og er designet for å gjøre statusdata om til nyttig innsikt.",	
 			"pros":{
 				"title": "Fordeler med denne stacken",
 				"routing-state": "Fleksibel ruting og state management: Next.js App router og Zustand ga full kontroll over arkitekturen og tilstandshåndtering.",
