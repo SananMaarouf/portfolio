@@ -1,41 +1,25 @@
 {
-  "name": "sanan-v5",
-  "version": "0.1.0",
+  "name": "sanan-portfolio-monorepo",
+  "version": "1.0.0",
+  "description": "Portfolio with Next.js frontend and Sanity CMS backend",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@radix-ui/react-accordion": "^1.2.10",
-    "@radix-ui/react-dialog": "^1.1.2",
-    "@radix-ui/react-slot": "^1.1.0",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "embla-carousel-react": "^8.5.1",
-    "i18next": "^24.0.2",
-    "lucide-react": "^0.460.0",
-    "motion": "^11.11.17",
-    "next": "14.2.18",
-    "next-i18next": "^15.4.0",
-    "react": "^18",
-    "react-animated-cursor": "^2.11.2",
-    "react-device-detect": "^2.2.3",
-    "react-dom": "^18",
-    "react-i18next": "^15.1.2",
-    "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7"
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "start": "npm run start:frontend",
+    "start:frontend": "cd frontend && npm run start",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "deploy:studio": "cd backend && npm run deploy"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.18",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
-  }
+    "concurrently": "^8.2.2"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ]
 }
