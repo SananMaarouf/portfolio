@@ -4,5 +4,5 @@ module.exports = {
     defaultLocale: 'nb',
     locales: ['en', 'nb'],
   },
-  localePath: './public/locales',
+  react: { useSuspense: false },
 }

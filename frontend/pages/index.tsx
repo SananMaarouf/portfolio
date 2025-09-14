@@ -1,11 +1,11 @@
-import Landing from "../components/landing";
-import ProjectsCarousel from "../components/projectsCarousel";
-import Toolbox from "../components/toolbox";
+import { GetStaticProps } from "next";
 import { motion } from "motion/react";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Landing from "../components/landing";
+import Toolbox from "../components/toolbox";
 import { client } from "@/lib/sanity/client";
 import type { ProjectPreview } from "@/lib/sanity/types";
-import { GetStaticProps } from "next";
+import ProjectsCarousel from "../components/projectsCarousel";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 // GROQ query to fetch projects for the carousel
 const PROJECTS_CAROUSEL_QUERY = `*[_type == "project" && defined(slug.current)] | order(date desc) {
@@ -50,7 +50,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     return {
       props: {
         projects: projects || [],
-        ...(locale ? await serverSideTranslations(locale) : {}),
+        ...(locale ? await serverSideTranslations(locale, ['common']) : {}),
       },
       revalidate: 60, // Revalidate every minute
     };
@@ -60,9 +60,9 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     return {
       props: {
         projects: [],
-        ...(locale ? await serverSideTranslations(locale) : {}),
+        ...(locale ? await serverSideTranslations(locale, ['common']) : {}),
       },
-      revalidate: 60,
+      revalidate: 21600, // Revalidate every 6 hours
     };
   }
 }
