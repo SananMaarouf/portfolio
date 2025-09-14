@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { client } from "@/lib/sanity/client";
 import type { ProjectPreview } from "@/lib/sanity/types";
+import { GetStaticProps } from "next";
 
 // GROQ query to fetch projects for the carousel
 const PROJECTS_CAROUSEL_QUERY = `*[_type == "project" && defined(slug.current)] | order(date desc) {
@@ -20,30 +21,6 @@ const PROJECTS_CAROUSEL_QUERY = `*[_type == "project" && defined(slug.current)] 
 
 interface HomeProps {
   projects: ProjectPreview[];
-}
-
-export async function getStaticProps({ locale }: { locale: string }) {
-  try {
-    const projects = await client.fetch(PROJECTS_CAROUSEL_QUERY);
-
-    return {
-      props: {
-        projects: projects || [],
-        ...(await serverSideTranslations(locale)),
-      },
-      revalidate: 60, // Revalidate every minute
-    };
-  } catch (error) {
-    console.error('Error fetching projects:', error);
-
-    return {
-      props: {
-        projects: [],
-        ...(await serverSideTranslations(locale)),
-      },
-      revalidate: 60,
-    };
-  }
 }
 
 export default function Home({ projects }: HomeProps) {
@@ -64,4 +41,28 @@ export default function Home({ projects }: HomeProps) {
       <Toolbox />
     </motion.main>
   );
+}
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  try {
+    const projects = await client.fetch(PROJECTS_CAROUSEL_QUERY);
+
+    return {
+      props: {
+        projects: projects || [],
+        ...(locale ? await serverSideTranslations(locale) : {}),
+      },
+      revalidate: 60, // Revalidate every minute
+    };
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+
+    return {
+      props: {
+        projects: [],
+        ...(locale ? await serverSideTranslations(locale) : {}),
+      },
+      revalidate: 60,
+    };
+  }
 }
