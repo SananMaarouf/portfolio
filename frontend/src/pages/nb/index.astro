@@ -1,0 +1,47 @@
+---
+import { t } from "i18next";
+import Layout from "../../layouts/Layout.astro";
+import Landing  from "../../components/landing";
+import { getProjects } from "../../utils/sanity";
+import ProjectsCarousel from "@/components/projectsCarousel";
+import Toolbox from "@/components/toolbox";
+
+const projects = await getProjects();
+
+const myProjects = projects.map(project => ({
+  _id: project._id,
+  title: project.title,
+  technologies: project.technologies,
+  slug: project.slug,
+  projectType: project.projectType,
+  description: typeof project.description === 'object' ? (project.description as any).nb : project.description,
+  version: project.version,
+}));
+
+
+const carouselTranslations = {
+  title: t('projects.title', {lng: 'nb'}),
+  no_projects: t('projects.no_projects', {lng: 'nb'}),
+  web: t('projects.carousel.web', {lng: 'nb'}),
+  mobile: t('projects.carousel.mobile', {lng: 'nb'}),
+  both: t('projects.carousel.both', {lng: 'nb'}),
+};
+
+const landingTranslations = {
+  jobtitle: t('landing.jobtitle', {lng: 'nb'}),
+  location: t('landing.location', {lng: 'nb'}),
+};
+
+const toolboxTranslations = {
+  title: t('toolbox.title', {lng: 'nb'}),
+  db: t('toolbox.db', {lng: 'nb'}),
+};
+---
+
+<Layout title="Sanan Maarouf">
+  <section class="">
+    <Landing client:load t={landingTranslations}/>
+    <ProjectsCarousel client:load projects={myProjects} t={carouselTranslations} locale="nb" />
+    <Toolbox client:load t={toolboxTranslations} />
+  </section>
+</Layout>

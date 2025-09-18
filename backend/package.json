@@ -1,5 +1,5 @@
 {
-  "name": "sanan-backend",
+  "name": "backend",
   "private": true,
   "version": "1.0.0",
   "main": "package.json",
@@ -9,25 +9,23 @@
     "start": "sanity start",
     "build": "sanity build",
     "deploy": "sanity deploy",
-    "login": "sanity login",
     "deploy-graphql": "sanity graphql deploy"
   },
   "keywords": [
     "sanity"
   ],
   "dependencies": {
-    "@sanity/vision": "^4.6.1",
-    "dotenv": "^16.4.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "sanity": "^4.6.1",
+    "@sanity/vision": "^4.8.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sanity": "^4.8.1",
     "sanity-plugin-i18n-fields": "^1.0.0",
     "styled-components": "^6.1.15"
   },
   "devDependencies": {
-    "@sanity/eslint-config-studio": "^4.0.0",
-    "@types/react": "^18.0.25",
-    "eslint": "^8.6.0",
+    "@sanity/eslint-config-studio": "^5.0.0",
+    "eslint": "^9.0.0",
+    "@types/react": "^19.0.0",
     "prettier": "^3.0.2",
     "typescript": "^5.1.6"
   },

@@ -1,0 +1,52 @@
+import React from 'react';
+import { motion } from 'motion/react';
+
+interface LandingProps {
+  t:{
+    jobtitle: string;
+    location: string;
+  };
+}
+
+export default function Landing({ t }: LandingProps) {
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 100 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7 }}
+      className="
+        mt-10 mb-28
+        h-96 py-24 
+        w-11/12 mx-auto 
+        bg-transparent
+        flex flex-col md:flex-row 
+        items-center justify-center 
+        font-silkscreen text-center 
+        md:mt-10 md:items-center md:text-left
+        "
+    >
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        <img src="/sanan1.webp" className="mx-auto rounded-full mt-4 md:hidden" alt="Portrait" width={200} height={200} />
+        <h2 className="text-4xl mt-4">
+          <span className="text-deco break-keep">
+        Sanan Maarouf
+          </span>
+        </h2>
+        <h3 className="text-2xl md:text-3xl mt-2">
+          {t.jobtitle} <br /> {t.location}
+        </h3>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        <img src="/sanan1.webp" className="hidden md:block rounded-full ml-6" alt="Portrait" width={300} height={300} />
+      </motion.div>
+    </motion.section>
+  );
+}

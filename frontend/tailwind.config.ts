@@ -1,14 +1,12 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
-    darkMode: ["class"],
-    content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  theme: {
+/** @type {import('tailwindcss').Config} */
+export default {
+    darkMode: ['class'],
+    content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+	theme: {
   	extend: {
+  		fontFamily: {
+  			silkscreen: ['Silkscreen', 'monospace'],
+  		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -84,4 +82,3 @@ const config: Config = {
   },
   plugins: [require("tailwindcss-animate")],
 };
-export default config;

@@ -1,25 +1,28 @@
 {
-  "name": "sanan-portfolio-monorepo",
-  "version": "1.0.0",
-  "description": "Portfolio with Next.js frontend and Sanity CMS backend",
-  "private": true,
+  "name": "sanan-portfolio",
+  "description": "Portfolio website built with Astro and Sanity CMS",
+  "version": "6.0.0",
   "scripts": {
-    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend && npm run dev",
-    "build": "npm run build:frontend && npm run build:backend",
-    "build:frontend": "cd frontend && npm run build",
-    "build:backend": "cd backend && npm run build",
-    "start": "npm run start:frontend",
-    "start:frontend": "cd frontend && npm run start",
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "deploy:studio": "cd backend && npm run deploy"
+    "dev": "concurrently \"npm run dev --workspace=frontend\" \"npm run dev --workspace=backend\""
   },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
+  "keywords": [
+    "Sanity",
+    "Astro",
+    "Headless CMS",
+    "Visual Editing",
+    "Live Content API (LCAPI)",
+    "Real-time"
+  ],
+  "bugs": {
+    "url": "https://github.com/sanity-io/sanity-template-astro-clean/issues"
   },
+  "homepage": "https://github.com/sanity-io/sanity-template-astro-clean#readme",
   "workspaces": [
-    "frontend",
-    "backend"
-  ]
+    "backend",
+    "frontend"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "type": "module"
 }
