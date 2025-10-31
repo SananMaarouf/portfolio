@@ -1,6 +1,5 @@
 // Loading environment variables from .env files
 // https://docs.astro.build/en/guides/configuring-astro/#environment-variables
-import { loadEnv } from "vite";
 const {
   PUBLIC_SANITY_STUDIO_PROJECT_ID,
   PUBLIC_SANITY_STUDIO_DATASET,
@@ -8,23 +7,20 @@ const {
   PUBLIC_SANITY_DATASET,
 } = loadEnv(import.meta.env.MODE, process.cwd(), "");
 import { defineConfig } from "astro/config";
+import tailwind from "@astrojs/tailwind";
+import astroI18next from "astro-i18next";
 import sanity from "@sanity/astro";
 import react from "@astrojs/react";
-import tailwind from "@astrojs/tailwind"; // <- use Astro integration
+import { loadEnv } from "vite";
 
 // Different environments use different variables
 const projectId = PUBLIC_SANITY_STUDIO_PROJECT_ID || PUBLIC_SANITY_PROJECT_ID;
 const dataset = PUBLIC_SANITY_STUDIO_DATASET || PUBLIC_SANITY_DATASET;
 
-// Change this depending on your hosting provider (Vercel, Netlify etc)
-// https://docs.astro.build/en/guides/server-side-rendering/#adding-an-adapter
-import vercel from "@astrojs/vercel/serverless";
-import astroI18next from "astro-i18next";
 
 
 // https://astro.build/config
 export default defineConfig({
-  // removed the vite tailwind plugin to avoid double/incorrect setup
   i18n: {
     defaultLocale: "en",
     locales: ["en", "nb"],
@@ -32,8 +28,7 @@ export default defineConfig({
       prefixDefaultLocale: false
     }
   },
-  output: "hybrid",
-  adapter: vercel(),
+  output: "static",
   integrations: [
     astroI18next(),
     sanity({
@@ -43,6 +38,6 @@ export default defineConfig({
       apiVersion: "2024-12-08",
     }),
     react(),
-    tailwind(), // <- correct import used here
+    tailwind(),
   ],
 });
