@@ -1,0 +1,139 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { sanityClient } from "sanity:client";
+import groq from "groq";
+import PortableText from '../../../components/PortableText.astro';
+import SanityImage from '../../../components/SanityImage.astro';
+import type { Project } from '../../../../types/project';
+
+export async function getStaticPaths() {
+	const projects = await sanityClient.fetch(
+		groq`*[_type == "project" && defined(slug.current)]{
+			"slug": slug.current
+		}`
+	);
+
+	return projects.map((project: { slug: string }) => ({
+		params: { slug: project.slug }
+	}));
+}
+
+const { slug } = Astro.params;
+const lang = 'nb';
+
+const project = await sanityClient.fetch<Project>(
+	groq`*[_type == "project" && slug.current == $slug][0]{
+		_id,
+		_createdAt,
+		title,
+		slug,
+		"description": description[_key == $lang][0].value,
+		date,
+		version,
+		heroImage,
+		gallery,
+		technologies,
+		projectType,
+		"body": body[_key == $lang][0].value,
+		githubUrl,
+		liveUrl
+	}`,
+	{ slug, lang }
+);
+
+if (!project) {
+	return Astro.redirect('/404');
+}
+---
+
+<Layout lang="nb">
+	<article class="max-w-4xl mx-auto px-4 py-8">
+		<header class="mb-8">
+			<h1 class="text-4xl font-bold mb-4">{project.title}</h1>
+			{project.description && (
+				<div class="mb-8 text-lg">
+					<p>{project.description}</p>
+				</div>
+			)}
+			{project.date && (
+				<time class="text-gray-600 dark:text-gray-400">
+					{new Date(project.date).toLocaleDateString('nb-NO', { 
+						year: 'numeric', 
+						month: 'long', 
+						day: 'numeric' 
+					})}
+				</time>
+			)}
+			{project.version && (
+				<span class="ml-4 text-gray-600 dark:text-gray-400">
+					{project.version}
+				</span>
+			)}
+		</header>
+
+		{project.heroImage && (
+			<div class="mb-8">
+				<SanityImage node={project.heroImage} alt={project.title} />
+			</div>
+		)}
+
+
+		{project.technologies && project.technologies.length > 0 && (
+			<div class="mb-8">
+				<h2 class="text-2xl font-bold mb-4">Teknologier</h2>
+				<div class="flex flex-wrap gap-2">
+					{project.technologies.map((tech) => (
+						<span class="bg-primary text-primary-foreground px-3 py-1 rounded-md text-sm">
+							{tech}
+						</span>
+					))}
+				</div>
+			</div>
+		)}
+
+		{project.body && (
+			<div class="prose dark:prose-invert max-w-none mb-8">
+				<PortableText value={project.body} />
+			</div>
+		)}
+
+		{project.gallery && project.gallery.length > 0 && (
+			<div class="mb-8">
+				<h2 class="text-2xl font-bold mb-4">Galleri</h2>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+					{project.gallery.map((image) => (
+						<div>
+							<SanityImage node={image} alt={image.alt || image.title || project.title} />
+							{image.title && (
+								<p class="text-sm text-gray-600 dark:text-gray-400 mt-2">{image.title}</p>
+							)}
+						</div>
+					))}
+				</div>
+			</div>
+		)}
+
+		<div class="flex gap-4 mt-8">
+			{project.githubUrl && (
+				<a 
+					href={project.githubUrl} 
+					target="_blank" 
+					rel="noopener noreferrer"
+					class="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90"
+				>
+					Se på GitHub
+				</a>
+			)}
+			{project.liveUrl && (
+				<a 
+					href={project.liveUrl} 
+					target="_blank" 
+					rel="noopener noreferrer"
+					class="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90"
+				>
+					Se Live Nettside
+				</a>
+			)}
+		</div>
+	</article>
+</Layout>

@@ -1,0 +1,208 @@
+{
+	"nav": {
+		"projects": "Projects",
+		"contact": "Contact me",
+		"resume": "Resume",
+		"language": "Language",
+		"platforms": "Contact me on"
+
+	},
+	"introduction": {
+		"greeting": "Hello",
+		"im": "I'm",
+		"jobtitle": "Fullstack Developer",
+		"location": "Oslo, Norway",
+		"projects": "Projects",
+		"imageAlt": "A picture of me"
+	},
+	"projects": {
+		"title": "Projects",
+		"no_projects": "No projects available at the moment.",
+		"viewProject": "View project",
+		"seeAll": "See all",
+		"carousel": {
+			"web": "Web",
+			"mobile": "Mobile",
+			"both": "Web / Mobile"
+		}
+
+	},
+	"toolbox":{
+		"title":"Technologies i know and love",
+		"db": "Databases"
+	},
+	"footer": {
+		"aboutUs": "about me",
+		"developedBy": "Developed by",
+		"socials": "Socials",
+		"contact": {
+			"title": "Contact me",
+			"form": {
+				"email": "Email",
+				"message": "Message",
+				"submit": "Submit"
+			},
+			"success": {
+				"messageSent": "Thanks for your submission!",
+				"sendNew": "Send another message"
+			}
+		}
+	},
+	"notFound": {
+		"title": "Page not found",
+		"description": "This page doesn't seem to exist. <0>Click here</0> to go back the homepage."
+	},
+	"resume": {
+		"jobtitle": "Fullstack Developer",
+		"location": "Oslo, Norway",
+		"summary": "developer",
+		"experience": {
+			"title": "Experience",
+			"fsd": "System Developer",
+			"laft": "LAFT Software AS",
+			"laftDate": "Oktober 2021 - March 2024",
+			"machinist": "Cinema machinist",
+			"nfkino": "Nordisk Film Kino AS",
+			"nfkinoDate": "June 2018 - August 2018",
+			"freelance": "Freelance",
+			"webdev": "Web developer",
+			"freelanceDate": "May 2022 - Present"
+		},
+		"education": {
+			"title": "Education",
+			"usn": "University of South-Eastern Norway",
+			"it": "IT and Information Systems",
+			"bachelor": "Bachelor's degree",
+			"bachelorDate": "August 2018 - June 2021",
+			"vgs": "Horten High School",
+			"field": "General Studies",
+			"vgsDate": "August 2013 - May 2016"
+		},
+		"skills": {
+			"title": "Skills",
+			"other": "Other",
+			"mobile": "Mobile"
+		},
+		"languages": {
+			"title": "Languages",
+			"norwegian": "Norwegian",
+			"english": "English",
+			"kurdish": "Kurdish",
+			"turkish": "Turkish",
+			"german": "German"
+		},
+		"footer": {
+			"title": "Like what you see?",
+			"prompt": "Download my resume",
+			"download": "Download"
+		}
+	},
+	"projectsTypes":{
+		"web": "Web",
+		"mobile": "Mobile",
+		"both": "Web / Mobile",
+		"joke": "Web / joke",
+		"other": "Other"
+	},
+	"projectsDescriptions": {
+		"dubistro": "Band promo website for a musician duo based in Oslo",
+		"applitrack": "Job application tracker",
+		"partnersos": "Emergency location sharing app",
+		"sanplan": "Simple todo app",
+		"sara": "Portfolio page for artist based in Oslo",
+		"greentalk": "Forum for environmental discussion",
+		"insultifier": "Insultifies text"
+	},
+	"partnersos": {
+		"description": "Violence alarm / location sharing app",
+		"date":"July 8th, 2024",
+		"intro": "PartnerSOS empowers users to share their location with their partners instantly when they feel unsafe. Unlike apps like Messenger or Snapchat, PartnerSOS requires only a single tap, ensuring a quick and efficient notification process. Upon activation, the partner receives an SMS containing a link to view the user's location via a web app. The location updates in real-time and can be accessed directly in Google Maps for precise navigation. This streamlined approach ensures that users can seek assistance quickly and effortlessly, especially in stressful situations.",
+		"inspirationHeader": "Inspiration",
+		"inspiration": "The idea for PartnerSOS stemmed from a personal experience involving a friend. This friend was walking home after work when they noticed a customer following them. While not feeling threatened enough to call the police, they wanted their partner to be aware of their situation immediately. This incident highlighted the need for a simple yet effective way to share one's location, even if cellular data is turned off.",
+		"developmentHeader": "Development",
+		"development": "As a developer, I recognized the potential to create a fast and reliable solution. PartnerSOS is built using Expo Go and Firebase.",
+		"expoGoDetails": "A React Native framework that accelerates app development by providing robust developer tools.",
+		"firebaseDetails": "A suite of cloud-based development tools that aid in building, deploying, and scaling mobile apps. I utilized Firebase Authentication, Firestore DB, and Cloud Functions.",
+		"experienceHeader": "Experience",
+		"experience": "Developing PartnerSOS was a rewarding endeavor, especially since my background is primarily in web development. Leveraging React Native allowed me to apply my web development skills (JSX, TSX) to create a mobile app. Regardless of its popularity, this project provided invaluable experience in mobile app development."
+	},
+	"applitrack":{
+		"description": "Job application tracker",
+		"date": "August 18th, 2024. Updated: May 2025",
+		"intro": "Applitrack is a webapp i made to track the job applications i have sent.",
+		"story": "I created this tool because i used to have a spreadsheet in Google Sheets and Microsoft Excel. I kept switching between them and often forgot which one was the most recent. So i created Applitrack to see all the applications i had sent, the status of them. I also wanted to be able to see statistics on how many applications i had sent, how many i had gotten a response from and how many i had gotten an interview from.",
+		"experience": {
+			"title": "My Experience",
+			"v1": "In the first version of the application, I used Next.js and Pocketbase. Pocketbase, a lightweight alternative to Supabase with built-in authentication and an SQLite database, combined with Next.js, a powerful JavaScript framework, made development efficient. Next.js's built-in features for routing, image optimization, and static HTML generation contributed to a productive workflow. However, I decided to challenge myself by rewriting the application without Next.js.",
+			"v2": "In version 2, I chose a stack consisting of Vite, React, TanStack Query/Router, Pocketbase, Hono.js, and Cloudflare Workers. This gave me valuable experience in developing modular applications without a comprehensive framework.",
+			"v3": "In version 3, I transitioned back to Next.js with Supabase. This decision was driven by the need for a more robust solution, especially for authentication and database management. Supabase, a powerful alternative to Firebase, provided a seamless experience with its built-in authentication and PostgreSQL database. Next.js's server-side rendering capabilities and API routes made it easy to integrate with Supabase, allowing for efficient data fetching and management. The combination of Next.js and Supabase offered a comprehensive solution for building modern web applications.",
+			"v3-2": "A new addition in this version was the introduction of a Sankey diagram to visualize the flow of job applications through different stages. From 'Applied' to 'Interviewing' to 'Offer' and beyond. This feature provides users with a clear, intuitive view of their progress and highlights where applications tend to stall. It was designed to transform raw status data into insight, making the job search feel more trackable and less overwhelming. Building it involved custom data processing and thoughtful UI work to ensure it was both informative and visually engaging.",
+			"pros": {
+				"title": "Advantages of This Stack",
+				"routing-state": "Flexible routing and state management: NextJS App router and Zustand provided full control over the architecture and state management.",
+				"performance": "Performance: The combination of Next.js and Supabase ensured fast loading times and efficient data handling.",
+				"learning": "Learning and exploration: The transition was a valuable process that expanded my understanding of modern web technologies."
+			}
+		}
+	},
+	"greentalk": {
+		"description": "For the environmentalists",
+		"date": "March 18th, 2021",
+		"intro": "In our second year of university, we were tasked with creating a CRUD application for our semester assignment. After some time debating what kind of site and what it should be about, we landed on a forum for environmentalistssince global warming, climate change, and pollution are becoming bigger problems, we wanted to create a space where like minded people could communicate and start events to meet up.",
+		"group": "My group consisted of: ",
+		"me": "Me"
+
+	},
+	"sanplan": {
+		"description":"Simple todo app create with Expo Go",
+		"date":"March 5th, 2024",
+		"intro":"This is my todo app made with React Native, Expo Go and Expo Router.",
+		"story":"It is my starting point for creating universal mobile apps using JSX, a syntax extension for JavaScript that allows developers to write HTML-like code inside a JavaScript file. In the beginning, my goal with this app is to create a functional and nice looking todo app that runs on Android/iOS.",
+		"github": "If you are interested in the code you can find it on "
+	},
+	"sara": {
+		"cardTitle":"Freelance work",
+		"card": "Sarazamecznik.com",
+		"description": "Portfolio page for artist, Sara Zamecznik",
+		"date": "February 27th, 2024",
+		"intro": "This was an exiting project to do.",
+		"intro2": "My client, Sara Zamecznik, is an art student at KHIO in Oslo. She is a skilled artist who creates art in various mediums, specializing in ceramics.",
+		"intro3": "Upon learning that she would soon graduate and had been showcasing her art exclusively on Instagram, I recognized the need for a more professional platform—an exclusive website.",
+		"intro4": "I reached out to Sara and presented an offer she couldn't refuse. I had the freedom to use any technologies I preferred, with her only requirement being a design that is minimal, mobile-friendly, and cost-effective to host.",
+		"criteria": "With these criteria in mind, I set out to find a suitable tech stack. I instantly thought of using a CMS such as Wordpress or Squarespace for their ease of use and are easy to maintain. While CMS-platforms like WordPress or Squarespace are popular for their user friendlyness, they come at a literal cost. Luckily there are more cost effective alternatives. Given the nature of the site, all off the content could be static and only need to be updated when she makes a new post. Here is where static site generators(SSG) and headless-CMS systems come in. By utilizing SSGs, such as Next.js, to fetch content from the headless CMS, in this case, Contentful, I could generate a static webpage. This approach is ideal for achieving a custom UI design and allows for easy hosting on Vercel, free of charge. It also enables non-coders to create content through a user-friendly CMS interface, triggering automatic webpage rebuilding via webhooks.",
+		"choice": "This choice comes with a drawback—changing the UI in the future would either require coding knowledge or hiring my services again. After discussing the pros and cons, Sara and I agreed on the headless CMS approach.",
+		"research": "After doing some research the tech stack ended up being:",
+		"techStack": {
+			"nextjs": "as the JS framework",
+			"tailwind": "for styling",
+			"contentful": "as the headless CMS",
+			"graphql": "for fetching data",
+			"formspree": "for the contact form",
+			"vercel": "for hosting"
+		},
+		"nextJsExperience": "Developing with Next.js was enjoyable, thanks to its built-in tools like image optimization and routing. Hosting on Vercel, which is tailored for Next.js, was seamless. Tailwind CSS facilitated rapid UI development, making responsive components easy to create.",
+		"contentfulExperience": "Contentful proved to be user-friendly, allowing for straightforward content model creation, post generation, and asset uploads."
+	},
+	"insultifier": {
+		"description": "Clap back quicly",
+		"date": "May 6th, 2024",
+		"intro": "Are you immature? or very sarcastic? Then insult.sanan.no is the perfect tool for you!",
+		"intro2": "The insultifier is a tool i made to quickly clap back at my friends when they say something stupid in the group chat, but it works great in a corporate environment....i think.",
+		"howItWorks": "You write in a sentence such as \"noooo sanan, you cannot just drop the database because you were trying to free up space\". and it returns \"nOoOo sAnAn, YoU CaNnOt jUsT DrOp tHe dAtAbAsE BeCaUsE YoU WeRe tRyInG To fReE Up sPaCe\""
+	},
+	"moviematch": {
+		"description":"Do you and your partner constantly argue about what movies to watch? Movie Match could be the solution to your troubles",
+		"date": "March 18th, 2021",
+		"story":"In our second year of university, we were tasked with creating a practical Android app for our semester assignment. My group spent some time talking about our trials and tribulations and how an app could solve them. Turns out that therapy is the solution to most of them, but what could be solved was the issue of finding a movie that everybody likes on movie nights and thus the idea was born.",
+		"group": "My group consisted of: "
+	},
+	"dubistro": {
+		"description": "dubistro.no",
+		"date": "December 10th, 2024",
+		"intro": "This was a project I did for a local musical duo who wanted a simple website to more easily receive bookings.",
+		"intro2": "I was approached by Maxim about creating a website for him and his partner and I was more than willing to help. I had the freedom to use whatever technology I preferred, with their only requirements being a design that is fast, mobile-friendly, and user-friendly.",
+		"criteria": "With these criteria in mind, I set about finding a suitable techstack. I immediately thought of using a CMS like Contentful for their ease of use and ease of maintenance. Given the nature of the site, all content could be static and only need updating when they make a change to the CMS system.", 
+		"criteria2": "This is where static site generators (SSG) and headless CMS systems come in. By using SSGs, such as Next.js, to pull content from a headless CMS, in this case Sanity CMS, I was able to generate a static website. This approach is ideal for achieving a custom UI design and enables easy hosting on Vercel, free of charge. It also enables non-coders to manage content through an easy-to-use CMS interface, which triggers automatic website rebuilds via webhooks."
+
+	}
+}

@@ -1,0 +1,35 @@
+---
+import Toolbox from '@/components/react/toolbox';
+import { getExperienceEntries } from '../utils/sanity';
+
+interface Props {
+    lang?: string;
+}
+
+const { lang = 'en' } = Astro.props;
+
+// fetch experience entries with localized descriptions
+// const experiences = await getExperienceEntries(lang);
+
+const toolboxTranslations = {
+    en: {
+    title: "Toolbox",
+    backend: "Backend",
+    frontend: "Frontend",
+    cloudBaas: "Cloud & BaaS",
+    deployment: "Deployment & Hosting",
+    db: "Databases"
+  },
+  nb: {
+    title: "Verktøykassa",
+    backend: "Backend",
+    frontend: "Frontend",
+    cloudBaas: "Sky & BaaS",
+    deployment: "Deployment & Hosting",
+    db: "Databaser"
+  }
+};
+
+const t = toolboxTranslations[lang as keyof typeof toolboxTranslations] || toolboxTranslations.en;
+---
+<Toolbox client:load t={t} />

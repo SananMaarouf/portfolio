@@ -1,0 +1,40 @@
+---
+import type { SanityDocument } from "@sanity/client";
+import { loadQuery } from "../../../sanity/lib/load-query";
+import PortableText from "../../../components/PortableText.astro";
+import SanityImage from "../../../components/SanityImage.astro";
+import type { SanityPost } from "../../../../types";
+
+export async function getStaticPaths() {
+  const { data: posts } = await loadQuery<SanityDocument[]>({
+    query: `*[_type == "post"]`,
+  });
+
+  return posts.map(({ slug }) => {
+    return {
+      params: {
+        slug: slug.current,
+      },
+    };
+  });
+}
+
+const { params } = Astro;
+
+const { data: post } = await loadQuery<SanityPost>({
+  query: `*[_type == "post" && slug.current == $slug][0]{
+    "title": title[_key == "nb"][0].value,
+    "body": body[_key == "nb"][0].value,
+    mainImage{
+      asset,
+      alt
+    }
+  }`,
+  params,
+});
+
+---
+
+<h1>A post about {post.title}</h1>
+<SanityImage node={post.mainImage} width={600} />
+<PortableText value={post.body} />

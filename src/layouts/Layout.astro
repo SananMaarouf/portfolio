@@ -1,0 +1,49 @@
+---
+import '../styles/global.css';
+import { Navbar } from '@/components/react/navbar';
+
+interface Props {
+	lang?: string;
+}
+
+const { lang = 'en' } = Astro.props;
+const locale = lang as 'en' | 'nb';
+
+const pageTitle = import.meta.env.PUBLIC_PAGE_TITLE;
+const navbarTitle = import.meta.env.PUBLIC_NAVBAR_TITLE;
+
+// Menu translations
+const menuTranslations = {
+	en: [
+		{ title: "Projects", url: "#projects" },
+	],
+	nb: [
+		{ title: "Prosjekter", url: "#projects" },
+	]
+};
+
+const menu = menuTranslations[locale];
+---
+<!doctype html>
+
+<html lang={lang}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{pageTitle}</title>
+		<script is:inline>
+			// Initialize theme before page loads to prevent flash
+			const theme = localStorage.getItem('theme') || 
+				(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+			document.documentElement.classList.toggle('dark', theme === 'dark');
+		</script>
+	</head>
+	<Navbar client:load logo={{ title: navbarTitle }} locale={locale} menu={menu} />
+	<body class="bg-background text-foreground transition-colors duration-300 ease-linear">
+		<div class="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
+			<slot />
+		</div>
+	</body>
+</html>

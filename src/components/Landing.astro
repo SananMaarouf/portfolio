@@ -1,0 +1,15 @@
+---
+import Introduction from './react/introduction';
+import { getLanding } from '@/utils/sanity';
+
+interface Props {
+	lang?: string;
+}
+
+const { lang = 'en' } = Astro.props;
+
+// Fetch landing page data from Sanity
+const landingData = await getLanding(lang);
+---
+
+<Introduction client:load landingData={landingData} />

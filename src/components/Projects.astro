@@ -1,0 +1,35 @@
+---
+import { getProjects } from "../utils/sanity";
+import ProjectsCarousel from "./react/projectsCarousel";
+
+interface Props {
+	lang?: string;
+}
+
+const { lang = 'en' } = Astro.props;
+
+// Fetch projects using the utility function
+const projects = await getProjects(lang);
+
+// Translation strings for the carousel
+const translations = {
+	en: {
+		title: "Projects",
+		web: "Web",
+		mobile: "Mobile",
+		both: "Web / Mobile",
+		no_projects: "No projects available at the moment."
+	},
+	nb: {
+		title: "Prosjekter",
+		web: "Nett",
+		mobile: "Mobil",
+		both: "Nett / Mobil",
+		no_projects: "Ingen prosjekter tilgjengelig for øyeblikket."
+	}
+};
+
+const t = translations[lang as keyof typeof translations] || translations.en;
+---
+
+<ProjectsCarousel projects={projects} t={t} locale={lang} client:load />

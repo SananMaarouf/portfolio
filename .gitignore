@@ -1,29 +1,36 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# build output
+dist/
+
+# generated types
+.astro/
 
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
+node_modules/
 
-# misc
-.DS_Store
-*.pem
-.vscode
-
-# debug
+# logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
-# env files
+# environment variables
 .env
-.env.*
-.env.example
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# vscode setting folder
+.vscode/
+
+# local env files
+.env.local
+.env.*.local
 
 # vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+.vercel/
+.sanity/runtime/app.js
+.sanity/runtime/index.html
