@@ -13,8 +13,6 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       IMAGE_NAME: ${{ secrets.DOCKERHUB_IMAGE_NAME }}
-      # Build full image tag once, so if IMAGE_NAME is empty we see it clearly
-      IMAGE_TAG: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}:latest
       PUBLIC_SANITY_PROJECT_ID: ${{ secrets.PUBLIC_SANITY_PROJECT_ID }}
       PUBLIC_SANITY_DATASET: ${{ secrets.PUBLIC_SANITY_DATASET }}
       PUBLIC_PAGE_TITLE: ${{ secrets.PUBLIC_PAGE_TITLE }}
@@ -25,18 +23,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Validate Docker image configuration
-        run: |
-          if [ -z "${DOCKERHUB_USERNAME}" ]; then
-            echo "DOCKERHUB_USERNAME is empty. Please set the DOCKERHUB_USERNAME secret."
-            exit 1
-          fi
-          if [ -z "${IMAGE_NAME}" ]; then
-            echo "DOCKERHUB_IMAGE_NAME is empty. Please set the DOCKERHUB_IMAGE_NAME secret."
-            exit 1
-          fi
-          echo "Using image tag: ${IMAGE_TAG}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -53,7 +39,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ env.IMAGE_TAG }}
+          tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
           platforms: linux/amd64
           build-args: |
             PUBLIC_SANITY_PROJECT_ID=${{ env.PUBLIC_SANITY_PROJECT_ID }}
