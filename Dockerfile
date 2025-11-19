@@ -23,6 +23,7 @@ ENV SANITY_STUDIO_STUDIO_HOST=$SANITY_STUDIO_STUDIO_HOST
 COPY package.json package-lock.json* ./
 
 # Install dependencies
+# it fails without --legacy-peer-deps for some reason
 RUN npm ci --legacy-peer-deps
 
 # Copy source code
