@@ -61,6 +61,7 @@ jobs:
           CF_ACCESS_CLIENT_SECRET: ${{ env.CF_ACCESS_CLIENT_SECRET }}
         run: |
           echo "Triggering Dokploy deployment..."
+          echo "=================================================="
           
           # Make the request and capture both response and HTTP code
           HTTP_CODE=$(curl -X POST "$DOKPLOY_DEPLOY_HOOK_URL" \
@@ -77,8 +78,29 @@ jobs:
           
           RESPONSE_BODY=$(cat /tmp/response.txt 2>/dev/null || echo "No response body")
           
-          echo "HTTP Status Code: $HTTP_CODE"
-          echo "Response Body: $RESPONSE_BODY"
+          echo ""
+          echo "📊 Response Status: $HTTP_CODE"
+          echo "=================================================="
+          
+          # Try to pretty-print JSON response
+          if echo "$RESPONSE_BODY" | jq . > /dev/null 2>&1; then
+            echo "📄 Response Body (formatted):"
+            echo "$RESPONSE_BODY" | jq .
+          elif echo "$RESPONSE_BODY" | grep -q "<html"; then
+            echo "📄 Response Body (HTML - extracted text):"
+            # Extract title and main error message from HTML
+            TITLE=$(echo "$RESPONSE_BODY" | grep -oP '(?<=<title>)[^<]+' || echo "")
+            ERROR_MSG=$(echo "$RESPONSE_BODY" | sed 's/<[^>]*>//g' | grep -v '^[[:space:]]*$' | head -20)
+            if [ -n "$TITLE" ]; then
+              echo "Title: $TITLE"
+              echo ""
+            fi
+            echo "$ERROR_MSG"
+          else
+            echo "📄 Response Body:"
+            echo "$RESPONSE_BODY"
+          fi
+          echo "=================================================="
           
           # Check for success
           if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 201 ] || [ "$HTTP_CODE" -eq 204 ]; then
@@ -88,29 +110,40 @@ jobs:
           
           # Handle specific error cases
           if [ "$HTTP_CODE" -eq 403 ]; then
+            echo ""
             echo "❌ Error: Cloudflare Access denied (403)"
+            echo "=================================================="
             echo "Possible issues:"
             echo "  - CF_ACCESS_CLIENT_ID or CF_ACCESS_CLIENT_SECRET are incorrect"
             echo "  - Service Auth credentials need to be regenerated in Cloudflare"
             echo "  - The application is not properly configured in Cloudflare Access"
-            grep -i "cloudflare" /tmp/curl_debug.txt || true
+            echo ""
+            echo "🔍 Cloudflare-related debug info:"
+            grep -i "cloudflare" /tmp/curl_debug.txt || echo "  (none found)"
             exit 1
           elif [ "$HTTP_CODE" -eq 0 ] || [ "$HTTP_CODE" -eq 000 ]; then
+            echo ""
             echo "❌ Error: Connection failed - request did not reach server"
+            echo "=================================================="
             echo "Possible issues:"
             echo "  - Network timeout"
             echo "  - DNS resolution failure"
             echo "  - Cloudflare blocking at network level"
-            echo "Debug info:"
+            echo ""
+            echo "🔍 Full debug info:"
             cat /tmp/curl_debug.txt
             exit 1
           elif [ "$HTTP_CODE" -ge 500 ]; then
+            echo ""
             echo "⚠️  Warning: Dokploy server error ($HTTP_CODE)"
+            echo "=================================================="
             echo "The request reached the server but it returned an error"
             exit 1
           else
+            echo ""
             echo "⚠️  Warning: Unexpected response code: $HTTP_CODE"
-            echo "Full debug output:"
+            echo "=================================================="
+            echo "🔍 Full debug output:"
             cat /tmp/curl_debug.txt
             exit 1
           fi
