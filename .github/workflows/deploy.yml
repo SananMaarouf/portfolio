@@ -19,6 +19,8 @@ jobs:
       PUBLIC_NAVBAR_TITLE: ${{ secrets.PUBLIC_NAVBAR_TITLE }}
       PUBLIC_COPYRIGHT_HOLDER: ${{ secrets.PUBLIC_COPYRIGHT_HOLDER }}
       SANITY_STUDIO_STUDIO_HOST: ${{ secrets.SANITY_STUDIO_STUDIO_HOST }}
+      CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+      CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
 
     steps:
       - name: Checkout repository
@@ -53,6 +55,12 @@ jobs:
         if: env.DOKPLOY_DEPLOY_HOOK_URL != ''
         env:
           DOKPLOY_DEPLOY_HOOK_URL: ${{ secrets.DOKPLOY_DEPLOY_HOOK_URL }}
+          CF_ACCESS_CLIENT_ID: ${{ env.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ env.CF_ACCESS_CLIENT_SECRET }}
         run: |
           echo "Triggering Dokploy deployment..."
-          curl -X POST "$DOKPLOY_DEPLOY_HOOK_URL" -H "Content-Type: application/json" -d '{}'
+          curl -X POST "$DOKPLOY_DEPLOY_HOOK_URL" \
+            -H "Content-Type: application/json" \
+            -H "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID" \
+            -H "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET" \
+            -d '{}'
