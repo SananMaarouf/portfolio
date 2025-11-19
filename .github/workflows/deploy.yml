@@ -54,14 +54,63 @@ jobs:
 
       - name: Trigger Dokploy deployment
         if: env.DOKPLOY_DEPLOY_HOOK_URL != ''
+        continue-on-error: true
         env:
           DOKPLOY_DEPLOY_HOOK_URL: ${{ secrets.DOKPLOY_DEPLOY_HOOK_URL }}
           CF_ACCESS_CLIENT_ID: ${{ env.CF_ACCESS_CLIENT_ID }}
           CF_ACCESS_CLIENT_SECRET: ${{ env.CF_ACCESS_CLIENT_SECRET }}
         run: |
           echo "Triggering Dokploy deployment..."
-          curl -X POST "$DOKPLOY_DEPLOY_HOOK_URL" \
+          
+          # Make the request and capture both response and HTTP code
+          HTTP_CODE=$(curl -X POST "$DOKPLOY_DEPLOY_HOOK_URL" \
             -H "Content-Type: application/json" \
             -H "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID" \
             -H "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET" \
-            -d '{}'
+            -d '{}' \
+            -w "%{http_code}" \
+            -o /tmp/response.txt \
+            -v \
+            --max-time 30 \
+            --connect-timeout 10 \
+            2>&1 | tee /tmp/curl_debug.txt | tail -1)
+          
+          RESPONSE_BODY=$(cat /tmp/response.txt 2>/dev/null || echo "No response body")
+          
+          echo "HTTP Status Code: $HTTP_CODE"
+          echo "Response Body: $RESPONSE_BODY"
+          
+          # Check for success
+          if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 201 ] || [ "$HTTP_CODE" -eq 204 ]; then
+            echo "✅ Deployment triggered successfully!"
+            exit 0
+          fi
+          
+          # Handle specific error cases
+          if [ "$HTTP_CODE" -eq 403 ]; then
+            echo "❌ Error: Cloudflare Access denied (403)"
+            echo "Possible issues:"
+            echo "  - CF_ACCESS_CLIENT_ID or CF_ACCESS_CLIENT_SECRET are incorrect"
+            echo "  - Service Auth credentials need to be regenerated in Cloudflare"
+            echo "  - The application is not properly configured in Cloudflare Access"
+            grep -i "cloudflare" /tmp/curl_debug.txt || true
+            exit 1
+          elif [ "$HTTP_CODE" -eq 0 ] || [ "$HTTP_CODE" -eq 000 ]; then
+            echo "❌ Error: Connection failed - request did not reach server"
+            echo "Possible issues:"
+            echo "  - Network timeout"
+            echo "  - DNS resolution failure"
+            echo "  - Cloudflare blocking at network level"
+            echo "Debug info:"
+            cat /tmp/curl_debug.txt
+            exit 1
+          elif [ "$HTTP_CODE" -ge 500 ]; then
+            echo "⚠️  Warning: Dokploy server error ($HTTP_CODE)"
+            echo "The request reached the server but it returned an error"
+            exit 1
+          else
+            echo "⚠️  Warning: Unexpected response code: $HTTP_CODE"
+            echo "Full debug output:"
+            cat /tmp/curl_debug.txt
+            exit 1
+          fi
