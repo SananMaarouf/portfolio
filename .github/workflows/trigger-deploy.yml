@@ -2,7 +2,8 @@ name: Trigger Dokploy Deployment
 
 on:
   workflow_dispatch:
-  
+  workflow_call:
+
 jobs:
   trigger-deployment:
     runs-on: ubuntu-latest
@@ -24,14 +25,18 @@ jobs:
           echo "=================================================="
           
           # Make the request and capture both response and HTTP code
+          # Added -A (User-Agent) to avoid WAF blocking 'curl'
+          # Added -L (Location) to follow redirects
           HTTP_CODE=$(curl -X POST "$DOKPLOY_DEPLOY_HOOK_URL" \
             -H "Content-Type: application/json" \
             -H "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID" \
             -H "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET" \
+            -A "SananMaarouf-GitHub-Actions-Deploy-Script" \
             -d '{}' \
             -w "%{http_code}" \
             -o /tmp/response.txt \
             -v \
+            -L \
             --max-time 30 \
             --connect-timeout 10 \
             2>&1 | tee /tmp/curl_debug.txt | tail -1)
@@ -46,6 +51,7 @@ jobs:
           if echo "$RESPONSE_BODY" | jq . > /dev/null 2>&1; then
             echo "📄 Response Body (formatted):"
             echo "$RESPONSE_BODY" | jq .
+            IS_JSON=true
           elif echo "$RESPONSE_BODY" | grep -q "<html"; then
             echo "📄 Response Body (HTML - extracted text):"
             # Extract title and main error message from HTML
@@ -56,9 +62,11 @@ jobs:
               echo ""
             fi
             echo "$ERROR_MSG"
+            IS_JSON=false
           else
             echo "📄 Response Body:"
             echo "$RESPONSE_BODY"
+            IS_JSON=false
           fi
           echo "=================================================="
           
@@ -71,12 +79,18 @@ jobs:
           # Handle specific error cases
           if [ "$HTTP_CODE" -eq 403 ]; then
             echo ""
-            echo "❌ Error: Cloudflare Access denied (403)"
+            echo "❌ Error: Access Denied (403)"
             echo "=================================================="
-            echo "Possible issues:"
-            echo "  - CF_ACCESS_CLIENT_ID or CF_ACCESS_CLIENT_SECRET are incorrect"
-            echo "  - Service Auth credentials need to be regenerated in Cloudflare"
-            echo "  - The application is not properly configured in Cloudflare Access"
+            if [ "$IS_JSON" = true ]; then
+               echo "👉 This looks like a BACKEND error (from Dokploy), not Cloudflare."
+               echo "   Check if your DOKPLOY_DEPLOY_HOOK_URL is correct."
+            else
+               echo "👉 This looks like a CLOUDFLARE error."
+               echo "   Possible issues:"
+               echo "   1. WAF/Bot Fight Mode is blocking the request (User-Agent added in this attempt)."
+               echo "   2. Service Token is not correctly added to the 'gh_dokploy_deploy' policy."
+               echo "   3. The policy Action is not set to 'Service Auth'."
+            fi
             echo ""
             echo "🔍 Cloudflare-related debug info:"
             grep -i "cloudflare" /tmp/curl_debug.txt || echo "  (none found)"
@@ -95,7 +109,7 @@ jobs:
             exit 1
           elif [ "$HTTP_CODE" -ge 500 ]; then
             echo ""
-            echo "⚠️  Warning: Dokploy server error ($HTTP_CODE)"
+            echo "⚠️  Warning: Server error ($HTTP_CODE)"
             echo "=================================================="
             echo "The request reached the server but it returned an error"
             exit 1

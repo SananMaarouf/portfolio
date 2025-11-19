@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     env:
@@ -19,9 +19,6 @@ jobs:
       PUBLIC_NAVBAR_TITLE: ${{ secrets.PUBLIC_NAVBAR_TITLE }}
       PUBLIC_COPYRIGHT_HOLDER: ${{ secrets.PUBLIC_COPYRIGHT_HOLDER }}
       SANITY_STUDIO_STUDIO_HOST: ${{ secrets.SANITY_STUDIO_STUDIO_HOST }}
-      CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
-      CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
-      DOKPLOY_DEPLOY_HOOK_URL: ${{ secrets.DOKPLOY_DEPLOY_HOOK_URL }}
 
     steps:
       - name: Checkout repository
@@ -52,98 +49,7 @@ jobs:
             PUBLIC_COPYRIGHT_HOLDER=${{ env.PUBLIC_COPYRIGHT_HOLDER }}
             SANITY_STUDIO_STUDIO_HOST=${{ env.SANITY_STUDIO_STUDIO_HOST }}
 
-      - name: Trigger Dokploy deployment
-        if: env.DOKPLOY_DEPLOY_HOOK_URL != ''
-        continue-on-error: true
-        env:
-          DOKPLOY_DEPLOY_HOOK_URL: ${{ secrets.DOKPLOY_DEPLOY_HOOK_URL }}
-          CF_ACCESS_CLIENT_ID: ${{ env.CF_ACCESS_CLIENT_ID }}
-          CF_ACCESS_CLIENT_SECRET: ${{ env.CF_ACCESS_CLIENT_SECRET }}
-        run: |
-          echo "Triggering Dokploy deployment..."
-          echo "=================================================="
-          
-          # Make the request and capture both response and HTTP code
-          HTTP_CODE=$(curl -X POST "$DOKPLOY_DEPLOY_HOOK_URL" \
-            -H "Content-Type: application/json" \
-            -H "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID" \
-            -H "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET" \
-            -d '{}' \
-            -w "%{http_code}" \
-            -o /tmp/response.txt \
-            -v \
-            --max-time 30 \
-            --connect-timeout 10 \
-            2>&1 | tee /tmp/curl_debug.txt | tail -1)
-          
-          RESPONSE_BODY=$(cat /tmp/response.txt 2>/dev/null || echo "No response body")
-          
-          echo ""
-          echo "📊 Response Status: $HTTP_CODE"
-          echo "=================================================="
-          
-          # Try to pretty-print JSON response
-          if echo "$RESPONSE_BODY" | jq . > /dev/null 2>&1; then
-            echo "📄 Response Body (formatted):"
-            echo "$RESPONSE_BODY" | jq .
-          elif echo "$RESPONSE_BODY" | grep -q "<html"; then
-            echo "📄 Response Body (HTML - extracted text):"
-            # Extract title and main error message from HTML
-            TITLE=$(echo "$RESPONSE_BODY" | grep -oP '(?<=<title>)[^<]+' || echo "")
-            ERROR_MSG=$(echo "$RESPONSE_BODY" | sed 's/<[^>]*>//g' | grep -v '^[[:space:]]*$' | head -20)
-            if [ -n "$TITLE" ]; then
-              echo "Title: $TITLE"
-              echo ""
-            fi
-            echo "$ERROR_MSG"
-          else
-            echo "📄 Response Body:"
-            echo "$RESPONSE_BODY"
-          fi
-          echo "=================================================="
-          
-          # Check for success
-          if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 201 ] || [ "$HTTP_CODE" -eq 204 ]; then
-            echo "✅ Deployment triggered successfully!"
-            exit 0
-          fi
-          
-          # Handle specific error cases
-          if [ "$HTTP_CODE" -eq 403 ]; then
-            echo ""
-            echo "❌ Error: Cloudflare Access denied (403)"
-            echo "=================================================="
-            echo "Possible issues:"
-            echo "  - CF_ACCESS_CLIENT_ID or CF_ACCESS_CLIENT_SECRET are incorrect"
-            echo "  - Service Auth credentials need to be regenerated in Cloudflare"
-            echo "  - The application is not properly configured in Cloudflare Access"
-            echo ""
-            echo "🔍 Cloudflare-related debug info:"
-            grep -i "cloudflare" /tmp/curl_debug.txt || echo "  (none found)"
-            exit 1
-          elif [ "$HTTP_CODE" -eq 0 ] || [ "$HTTP_CODE" -eq 000 ]; then
-            echo ""
-            echo "❌ Error: Connection failed - request did not reach server"
-            echo "=================================================="
-            echo "Possible issues:"
-            echo "  - Network timeout"
-            echo "  - DNS resolution failure"
-            echo "  - Cloudflare blocking at network level"
-            echo ""
-            echo "🔍 Full debug info:"
-            cat /tmp/curl_debug.txt
-            exit 1
-          elif [ "$HTTP_CODE" -ge 500 ]; then
-            echo ""
-            echo "⚠️  Warning: Dokploy server error ($HTTP_CODE)"
-            echo "=================================================="
-            echo "The request reached the server but it returned an error"
-            exit 1
-          else
-            echo ""
-            echo "⚠️  Warning: Unexpected response code: $HTTP_CODE"
-            echo "=================================================="
-            echo "🔍 Full debug output:"
-            cat /tmp/curl_debug.txt
-            exit 1
-          fi
+  trigger-deployment:
+    needs: build-and-push
+    uses: ./.github/workflows/trigger-deploy.yml
+    secrets: inherit
