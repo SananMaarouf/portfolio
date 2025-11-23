@@ -39,7 +39,11 @@ const Navbar = ({logo = {title: "Acme Corp"},
   menu = [
     {
       title: "Projects",
-      url: "#projects",
+      url: "/projects",
+    },
+    {
+      title: "Posts",
+      url: "/posts",
     },
   ],
   // Default call-to-action button
@@ -49,7 +53,13 @@ const Navbar = ({logo = {title: "Acme Corp"},
   locale = "en",
 }: NavbarProps) => {
   const homeUrl = locale === "nb" ? "/nb/" : "/";
-  const projectsUrl = `${homeUrl}#projects`;
+  const localizeUrl = (url: string) => {
+    if (locale === "nb" && url.startsWith("/")) {
+      if (url === "/") return "/nb/"; // root
+      return `/nb${url}`; // prefix for nb
+    }
+    return url;
+  };
   const resumeUrl = `/files/cv_${locale}.pdf`;
   const resumeTitle = locale === "nb" ? "CV" : "Resume";
   
@@ -69,15 +79,18 @@ const Navbar = ({logo = {title: "Acme Corp"},
             </a>
             {/* Desktop navigation menu items */}
             <div className="flex ml-auto items-center gap-1">
-              {menu.map((item) => (
-                <a
-                  key={item.title}
-                  href={item.url === "#projects" ? projectsUrl : item.url}
-                  className="hover:bg-muted hover:text-accent-foreground inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
-                >
-                  {item.title}
-                </a>
-              ))}
+              {menu.map((item) => {
+                const href = localizeUrl(item.url);
+                return (
+                  <a
+                    key={item.title}
+                    href={href}
+                    className="hover:bg-muted hover:text-accent-foreground inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                  >
+                    {item.title}
+                  </a>
+                );
+              })}
             </div>
           </div>
           {/* Right section: Theme switcher and action button */}
@@ -114,11 +127,14 @@ const Navbar = ({logo = {title: "Acme Corp"},
                 <div className="flex flex-col gap-6 p-4">
                   {/* Mobile menu links */}
                   <div className="flex flex-col gap-4">
-                    {menu.map((item) => (
-                      <a key={item.title} href={item.url === "#projects" ? projectsUrl : item.url} className="text-md font-semibold">
-                        {item.title}
-                      </a>
-                    ))}
+                    {menu.map((item) => {
+                      const href = localizeUrl(item.url);
+                      return (
+                        <a key={item.title} href={href} className="text-md font-semibold">
+                          {item.title}
+                        </a>
+                      );
+                    })}
                   </div>
 
                   {/* Mobile action buttons */}
