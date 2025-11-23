@@ -86,3 +86,16 @@ export type Project = {
   githubUrl?: string;
   liveUrl?: string;
 };
+
+export interface ProjectsCarouselProps {
+  projects: Project[];
+  t: {
+    title: string;
+    web: string;
+    mobile: string;
+    both: string;
+    no_projects: string;
+    see_all: string;
+  };
+  locale: string;
+}

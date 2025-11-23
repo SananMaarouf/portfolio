@@ -1,3 +1,5 @@
+import type { ImageAsset, PortableTextBlock, Slug } from "sanity";
+
 export type SanityPost = {
   _createdAt: string;
   _id: string;
@@ -35,3 +37,13 @@ export type SanityPost = {
     value: string;
   }>;
 };
+
+export interface Post {
+  _type: "post";
+  _createdAt: string;
+  title?: string;
+  slug: Slug;
+  excerpt?: string;
+  mainImage?: ImageAsset & { alt?: string };
+  body: PortableTextBlock[];
+}
