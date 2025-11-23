@@ -32,7 +32,7 @@ export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarous
 
 	// Helper function to get project URL with locale
 	const getProjectUrl = (slug: string) => {
-		return locale === 'en' ? `/project/${slug}` : `/${locale}/project/${slug}`;
+		return locale === 'en' ? `/projects/${slug}` : `/${locale}/projects/${slug}`;
 	};
 
 	// Determine visible projects (max 4) and whether there are more
