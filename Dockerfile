@@ -26,6 +26,7 @@ ARG PUBLIC_COPYRIGHT_HOLDER
 ARG SANITY_STUDIO_STUDIO_HOST
 ARG BUILD_COMMIT="unknown"
 ARG BUILD_TIMESTAMP="unknown"
+ARG CONTENT_UPDATE_TOKEN="" # used to bust build cache on content-only updates
 
 ENV PUBLIC_SANITY_PROJECT_ID=$PUBLIC_SANITY_PROJECT_ID \
 	PUBLIC_SANITY_DATASET=$PUBLIC_SANITY_DATASET \
@@ -43,8 +44,8 @@ COPY package.json package-lock.json* ./
 # Copy remaining source (everything else)
 COPY . .
 
-# Build static site
-RUN npm run build
+# Build static site (cache busts when CONTENT_UPDATE_TOKEN changes)
+RUN echo "Content token: $CONTENT_UPDATE_TOKEN" > .content-buster && npm run build
 
 ############################################
 # runtime stage: minimal nginx serving /dist
