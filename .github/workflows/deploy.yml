@@ -8,6 +8,11 @@ on:
   repository_dispatch:
     types: [sanity-update]
 
+# Prevent overlapping builds on same ref; cancel older in-progress runs
+concurrency:
+  group: deploy-${{ github.ref }}-${{ (github.event_name == 'repository_dispatch' && github.event.action == 'sanity-update') && 'content' || 'code' }}
+  cancel-in-progress: true
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -36,13 +41,15 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image (cached)
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+          tags: |
+            ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           platforms: linux/amd64
           build-args: |
             PUBLIC_SANITY_PROJECT_ID=${{ env.PUBLIC_SANITY_PROJECT_ID }}
@@ -51,6 +58,10 @@ jobs:
             PUBLIC_NAVBAR_TITLE=${{ env.PUBLIC_NAVBAR_TITLE }}
             PUBLIC_COPYRIGHT_HOLDER=${{ env.PUBLIC_COPYRIGHT_HOLDER }}
             SANITY_STUDIO_STUDIO_HOST=${{ env.SANITY_STUDIO_STUDIO_HOST }}
+            BUILD_COMMIT=${{ github.sha }}
+            BUILD_TIMESTAMP=${{ github.event.head_commit.timestamp || '' }}
+          cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:cache
+          cache-to: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:cache,mode=max
 
   trigger-deployment:
     needs: build-and-push
