@@ -1,10 +1,42 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { getPosts } from '@/utils/sanity';
+
+const lang = 'en';
+const posts = await getPosts(lang);
+
+const t = {
+	title: 'Posts',
+	no_posts: 'No posts available',
+};
+
+const getPostUrl = (slug: string) => `/post/${slug}`;
 ---
 
 <Layout lang="en">
-	<section class="container py-8">
-		<h1 class="text-3xl font-bold mb-4">Posts</h1>
-		<p>Posts listing page placeholder. TODO: implement posts query & list.</p>
+	<section id="posts" class="my-10 text-foreground md:mx-auto font-silkscreen relative w-full xl:w-10/12 bg-transparent scroll-mt-24">
+		<h1 class="text-3xl mb-6">{t.title}</h1>
+		{posts && posts.length > 0 ? (
+			<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+				{posts.map((post, index) => (
+					<div class="group w-full h-56 bg-card hover:bg-foreground rounded-xl text-card-foreground transition-all duration-300 ease-linear dark:hover:bg-card-foreground dark:hover:text-card overflow-hidden">
+						<a href={getPostUrl(post.slug.current)} class="w-full h-full flex flex-col relative">
+							<div class="p-4 grow">
+								<div class="flex justify-between">
+									<h2 class="text-2xl">P{index + 1}</h2>
+									<p class="text-xs my-auto opacity-70 line-clamp-1">{new Date(post._createdAt).toLocaleDateString(lang)}</p>
+								</div>
+								<p class="text-2xl line-clamp-1">{post.title ?? post.slug.current}</p>
+								<div class="text-sm mt-2 line-clamp-3">
+									  <p>{post.excerpt ?? ''}</p>
+								</div>
+							</div>
+						</a>
+					</div>
+				))}
+			</div>
+		) : (
+			<p class="text-lg">{t.no_posts}</p>
+		)}
 	</section>
 </Layout>

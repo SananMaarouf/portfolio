@@ -5,9 +5,23 @@ import type { Technology } from "../../types/technologies";
 import type { Landing } from "../../types/landing";
 import groq from "groq";
 
-export async function getPosts(): Promise<Post[]> {
+// Fetch posts localized by language, projecting a plain string title and excerpt
+export async function getPosts(lang: string = 'en'): Promise<Post[]> {
   return await sanityClient.fetch(
-    groq`*[_type == "post" && defined(slug.current)] | order(_createdAt desc)`
+    groq`*[_type == "post" && defined(slug.current)] | order(publishedAt desc, _createdAt desc){
+      _type,
+      _createdAt,
+      slug,
+      // localized title
+      "title": title[_key == $lang][0].value,
+      // first 160 chars of plain text body as excerpt
+      "excerpt": pt::text(body[_key == $lang][0].value)[0..160],
+      // include body blocks if needed later
+      "body": body[_key == $lang][0].value,
+      publishedAt,
+      mainImage
+    }`,
+    { lang }
   );
 }
 

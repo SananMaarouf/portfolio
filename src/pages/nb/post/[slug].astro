@@ -3,6 +3,7 @@ import type { SanityDocument } from "@sanity/client";
 import { loadQuery } from "../../../sanity/lib/load-query";
 import PortableText from "../../../components/PortableText.astro";
 import SanityImage from "../../../components/SanityImage.astro";
+import Layout from '../../../layouts/Layout.astro';
 import type { SanityPost } from "../../../../types";
 
 export async function getStaticPaths() {
@@ -25,6 +26,8 @@ const { data: post } = await loadQuery<SanityPost>({
   query: `*[_type == "post" && slug.current == $slug][0]{
     "title": title[_key == "nb"][0].value,
     "body": body[_key == "nb"][0].value,
+    publishedAt,
+    _createdAt,
     mainImage{
       asset,
       alt
@@ -33,8 +36,31 @@ const { data: post } = await loadQuery<SanityPost>({
   params,
 });
 
+if (!post) {
+  return Astro.redirect('/404');
+}
+
 ---
 
-<h1>A post about {post.title}</h1>
-<SanityImage node={post.mainImage} width={600} />
-<PortableText value={post.body} />
+<Layout lang="nb">
+  <article class="max-w-4xl mx-auto px-4 py-8">
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold mb-4">{post.title}</h1>
+      {post.publishedAt && (
+        <time class="text-gray-600 dark:text-gray-400">
+          {new Date(post.publishedAt).toLocaleDateString('nb-NO', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+      )}
+    </header>
+    {post.mainImage && (
+      <div class="mb-8">
+        <SanityImage node={post.mainImage} width={800} alt={post.mainImage.alt || post.title} />
+      </div>
+    )}
+    {post.body && (
+      <div class="prose dark:prose-invert max-w-none">
+        <PortableText value={post.body} />
+      </div>
+    )}
+  </article>
+</Layout>
