@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { PanelTopOpen, PanelBottomOpen } from "lucide-react";
 
 interface ToolboxProps {
   t: {
@@ -87,12 +88,19 @@ export default function Toolbox({ t }: ToolboxProps) {
       <div className="w-full">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-3xl md:text-4xl">{t.title}:</h2>
-          {openItems.length > 0 && (
+          {openItems.length > 0 ? (
             <button
               onClick={() => setOpenItems([])}
-              className="text-sm md:text-base px-3 py-1.5 rounded-lg border-2 border-border bg-card hover:bg-foreground hover:text-card transition-colors duration-200"
+              className="text-sm md:text-base px-3 py-1.5 rounded-lg border-2 border-border bg-card hover:bg-foreground hover:text-card transition-colors duration-200 flex items-center gap-2"
             >
-              Close All
+              <PanelBottomOpen className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              onClick={() => setOpenItems(['backend', 'frontend', 'cloudbaas', 'deployment', 'databases'])}
+              className="text-sm md:text-base px-3 py-1.5 rounded-lg border-2 border-border bg-card hover:bg-foreground hover:text-card transition-colors duration-200 flex items-center gap-2"
+            >
+              <PanelTopOpen className="w-4 h-4" />
             </button>
           )}
         </div>
