@@ -41,6 +41,8 @@ export type SanityPost = {
 export interface Post {
   _type: "post";
   _createdAt: string;
+  publishedAt: string;
+  
   title?: string;
   slug: Slug;
   excerpt?: string;
