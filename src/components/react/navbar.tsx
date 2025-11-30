@@ -73,7 +73,10 @@ const Navbar = ({logo = {title: "Acme Corp"},
           <div className="flex items-center w-full">
             {/* Logo link */}
             <a href={homeUrl} className="flex items-center gap-2">
-              <span className="text-lg font-semibold tracking-tighter whitespace-nowrap">
+              <span className="
+              text-4xl font-semibold tracking-tighter whitespace-nowrap
+              hover:scale-110 hover:-rotate-12 hover:text-primary
+              transition-all duration-300 inline-block">
                 {logo.title}
               </span>
             </a>
@@ -108,7 +111,10 @@ const Navbar = ({logo = {title: "Acme Corp"},
           <div className="flex items-center justify-between">
             {/* Mobile logo */}
             <a href={homeUrl} className="flex items-center gap-2">
-              <span className="text-lg font-semibold tracking-tighter whitespace-nowrap">
+              <span className="
+              text-lg font-semibold tracking-tighter whitespace-nowrap
+              hover:scale-110 hover:rotate-2 hover:text-primary
+              transition-all duration-300 inline-block">
                 {logo.title}
               </span>
             </a>

@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -18,6 +19,7 @@ interface ToolboxProps {
 }
 
 export default function Toolbox({ t }: ToolboxProps) {
+  const [openItems, setOpenItems] = useState<string[]>([]);
   const backend = [
     { src: "/technologies/rails.webp", alt: "Ruby on Rails", title: "Ruby on Rails" },
     { src: "/technologies/node.webp", alt: "Nodejs", title: "Node.js" },
@@ -83,9 +85,19 @@ export default function Toolbox({ t }: ToolboxProps) {
       flex flex-col items-center font-silkscreen 
       flex-wrap my-10 md:items-start ml-2 xl:w-10/12">
       <div className="w-full">
-        <h2 className="text-3xl mb-4 md:text-4xl">{t.title}:</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-3xl md:text-4xl">{t.title}:</h2>
+          {openItems.length > 0 && (
+            <button
+              onClick={() => setOpenItems([])}
+              className="text-sm md:text-base px-3 py-1.5 rounded-lg border-2 border-border bg-card hover:bg-foreground hover:text-card transition-colors duration-200"
+            >
+              Close All
+            </button>
+          )}
+        </div>
         
-        <Accordion type="multiple" className="w-full">
+        <Accordion type="multiple" className="w-full" value={openItems} onValueChange={setOpenItems}>
           
           {/* Backend */}
           <AccordionItem value="backend">
