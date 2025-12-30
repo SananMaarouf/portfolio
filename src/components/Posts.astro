@@ -1,0 +1,33 @@
+---
+import BlogPostCarousel from '@/components/react/BlogPostCarousel';
+import { getPosts } from '../utils/sanity';
+
+interface Props {
+	lang?: string;
+}
+
+const { lang = 'en' } = Astro.props;
+
+// Fetch posts using the utility function
+const posts = await getPosts(lang);
+
+// Translation strings for the carousel
+const translations = {
+	en: {
+		title: "Blog Posts",
+		no_posts: "No blog posts available at the moment.",
+		see_all: "See all posts"
+	},
+	nb: {
+		title: "Blogginnlegg",
+		no_posts: "Ingen blogginnlegg tilgjengelig for øyeblikket.",
+		see_all: "Se alle innlegg"
+	}
+};
+
+const t = translations[lang as keyof typeof translations] || translations.en;
+---
+
+{posts && posts.length > 0 && (
+	<BlogPostCarousel posts={posts} t={t} locale={lang} client:load />
+)}
