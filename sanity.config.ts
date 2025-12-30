@@ -6,6 +6,8 @@ import {internationalizedArray} from 'sanity-plugin-internationalized-array'
 export default defineConfig({
   projectId: "dilnanz0",
   dataset: "production",
+  studioHost: "sanan",
+  name: "Portfolio",
   plugins: [
     structureTool(),
     internationalizedArray({
