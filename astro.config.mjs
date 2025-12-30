@@ -1,8 +1,8 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { loadEnv } from 'vite';
 import sanity from '@sanity/astro';
 import react from '@astrojs/react';
-import { loadEnv } from 'vite';
+import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 // Load .env variables manually
@@ -13,20 +13,11 @@ const dataset = env.PUBLIC_SANITY_DATASET;
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'static',
   vite: {
-    /* 
-      Tailwind will pull in vite 7.
-      Astro still uses Vite 6.
-      This causes a typescript conflict.
-      So i am suppressing error until Astro uses Vite 7.
-      Read more here: https://github.com/withastro/astro/issues/14030 */
-   // @ts-expect-error
     plugins: [tailwindcss()],
-    optimizeDeps: {
-      exclude: ['ViteDevServerStopped']
-    }
+    
   },
+  output: 'static',
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'nb'],
