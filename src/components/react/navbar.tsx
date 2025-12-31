@@ -21,6 +21,8 @@ interface MenuItem {
 interface NavbarProps {
   logo?: {
     title: string;
+    image?: string;
+    alt?: string;
   };
   menu?: MenuItem[];
   linkBtn?: {
@@ -34,7 +36,7 @@ interface NavbarProps {
 
 // Main Navbar component with responsive design
 // Displays different layouts for desktop (lg+) and mobile screens
-const Navbar = ({logo = {title: "Acme Corp"},
+const Navbar = ({logo = {title: "Acme Corp", image: "/logo.png", alt: "Logo"},
   // Default menu structure
   menu = [
     {
@@ -60,7 +62,7 @@ const Navbar = ({logo = {title: "Acme Corp"},
     }
     return url;
   };
-  const resumeUrl = `/files/cv_${locale}.pdf`;
+  const resumeUrl = locale === "nb" ? "/download/cv-no" : "/download/cv-en";
   const resumeTitle = locale === "nb" ? "CV" : "Resume";
   
   return (
@@ -68,20 +70,21 @@ const Navbar = ({logo = {title: "Acme Corp"},
     <section className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border-b pt-4 pb-4">
       <div className="container">
         {/* Desktop Menu - Hidden on mobile, visible on large screens */}
-        <nav className="hidden justify-between gap-3 lg:flex">
-          {/* Left section: Logo and navigation menu */}
-          <div className="flex items-center w-full">
+        <nav className="hidden justify-center gap-3 lg:flex">
+          {/* Center section: Logo and navigation menu */}
+          <div className="flex items-center gap-8">
             {/* Logo link */}
-            <a href={homeUrl} className="flex items-center gap-2">
-              <span className="
-              text-4xl font-semibold tracking-tighter whitespace-nowrap
-              hover:scale-110 hover:-rotate-12 hover:text-primary
-              transition-all duration-300 inline-block">
-                {logo.title}
-              </span>
+            <a href={homeUrl} className="flex items-center gap-2 group">
+              {logo.image && (
+                <img 
+                  src={logo.image} 
+                  alt={logo.alt || logo.title}
+                  className="h-10 w-auto hover:scale-110 transition-transform duration-300"
+                />
+              )}
             </a>
             {/* Desktop navigation menu items */}
-            <div className="flex ml-auto items-center gap-1">
+            <div className="flex items-center gap-1">
               {menu.map((item) => {
                 const href = localizeUrl(item.url);
                 return (
@@ -95,14 +98,14 @@ const Navbar = ({logo = {title: "Acme Corp"},
                 );
               })}
             </div>
-          </div>
-          {/* Right section: Theme switcher and action button */}
-          <div className="flex gap-2 items-center">
-            <LanguageSwitcher currentLocale={locale} />
-            <ThemeSwitcher />
-            <Button asChild size="sm">
-              <a href={resumeUrl} download>{resumeTitle}</a>
-            </Button>
+            {/* Right section: Theme switcher and action button */}
+            <div className="flex gap-2 items-center ml-auto">
+              <LanguageSwitcher currentLocale={locale} />
+              <ThemeSwitcher />
+              <Button asChild size="sm">
+                <a href={resumeUrl} download>{resumeTitle}</a>
+              </Button>
+            </div>
           </div>
         </nav>
 
@@ -111,12 +114,13 @@ const Navbar = ({logo = {title: "Acme Corp"},
           <div className="flex items-center justify-between">
             {/* Mobile logo */}
             <a href={homeUrl} className="flex items-center gap-2">
-              <span className="
-              text-lg font-semibold tracking-tighter whitespace-nowrap
-              hover:scale-110 hover:rotate-2 hover:text-primary
-              transition-all duration-300 inline-block">
-                {logo.title}
-              </span>
+              {logo.image && (
+                <img 
+                  src={logo.image} 
+                  alt={logo.alt || logo.title}
+                  className="h-8 w-auto hover:scale-110 transition-transform duration-300"
+                />
+              )}
             </a>
             {/* Mobile menu drawer/sheet */}
             <Sheet>

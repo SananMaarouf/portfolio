@@ -1,0 +1,13 @@
+name = "cv-download-worker"
+main = "cloudflare-worker-cv.js"
+compatibility_date = "2025-01-01"
+
+# R2 Bucket Binding
+[[r2_buckets]]
+binding = "CV_BUCKET"
+bucket_name = "portfolio"
+
+# Worker Routes
+[[routes]]
+pattern = "sanan.no/download/*"
+zone_name = "sanan.no"
