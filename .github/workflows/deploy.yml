@@ -66,7 +66,12 @@ jobs:
           cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:cache
           cache-to: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:cache,mode=max
 
-  trigger-deployment:
+  deploy-worker:
     needs: build-and-push
+    uses: ./.github/workflows/deploy-worker.yml
+    secrets: inherit
+
+  trigger-deployment:
+    needs: [build-and-push, deploy-worker]
     uses: ./.github/workflows/trigger-deploy.yml
     secrets: inherit
