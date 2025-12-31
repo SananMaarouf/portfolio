@@ -2,7 +2,13 @@ name: Deploy Cloudflare Worker
 
 on:
   workflow_dispatch:
-  workflow_call:
+  push:
+    branches:
+      - master
+    paths:
+      - 'cloudflare-worker-cv.js'
+      - 'wrangler.toml'
+      - '.github/workflows/deploy-worker.yml'
 
 jobs:
   deploy-worker:
