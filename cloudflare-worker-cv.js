@@ -2,6 +2,7 @@
  * Cloudflare Worker for serving CV downloads from R2
  * 
  * R2 Binding: CV_BUCKET
+ * Rate Limit Binding: CV_RATE_LIMITER
  * Route: sanan.no/download/*
  */
 
@@ -33,6 +34,20 @@ export default {
       return new Response('Not Found', { 
         status: 404,
         headers: { 'X-Robots-Tag': 'noindex, nofollow, nosnippet' }
+      });
+    }
+
+    // Rate limiting: 10 downloads per minute per IP
+    const clientIP = request.headers.get('CF-Connecting-IP') || 'unknown';
+    const { success } = await env.CV_RATE_LIMITER.limit({ key: `${clientIP}:${path}` });
+    
+    if (!success) {
+      return new Response('Too Many Requests - Please try again later', { 
+        status: 429,
+        headers: {
+          'X-Robots-Tag': 'noindex, nofollow, nosnippet',
+          'Retry-After': '60'
+        }
       });
     }
 

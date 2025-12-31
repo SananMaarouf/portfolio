@@ -7,7 +7,17 @@ compatibility_date = "2025-01-01"
 binding = "CV_BUCKET"
 bucket_name = "portfolio"
 
-# Worker Routes
+# Rate Limiting Binding - 10 requests per minute
+[[ratelimits]]
+name = "CV_RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 10, period = 60 }
+
+# Worker Routes - add both sanan.no and www.sanan.no
 [[routes]]
 pattern = "sanan.no/download/*"
+zone_name = "sanan.no"
+
+[[routes]]
+pattern = "www.sanan.no/download/*"
 zone_name = "sanan.no"
