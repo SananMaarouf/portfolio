@@ -31,8 +31,6 @@ export default defineConfig({
       dataset,
       useCdn: false,
       apiVersion: "2025-09-21"
-      // studioBasePath removed - deploy Sanity Studio separately
-      // You can access it at: https://<your-project>.sanity.studio
     }),
     react()
   ]

@@ -21,3 +21,11 @@ zone_name = "sanan.no"
 [[routes]]
 pattern = "www.sanan.no/download/*"
 zone_name = "sanan.no"
+
+[[routes]]
+pattern = "sanan.no/nb/download/*"
+zone_name = "sanan.no"
+
+[[routes]]
+pattern = "www.sanan.no/nb/download/*"
+zone_name = "sanan.no"
