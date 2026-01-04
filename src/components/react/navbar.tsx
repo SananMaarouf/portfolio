@@ -21,7 +21,7 @@ const Navbar = ({logo = {title: "Acme Corp", image: "/logo.png", alt: "Logo"},
   
   return (
     // Sticky navbar with backdrop blur effect
-    <section className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border-b pt-4 pb-4">
+    <section className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 pt-4 pb-4">
       <div className="container">
         {/* Desktop Menu - Hidden on mobile, visible on large screens */}
         <DesktopNav

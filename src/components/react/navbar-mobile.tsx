@@ -10,14 +10,15 @@ export const MobileNav = ({ logo, menu, locale, homeUrl, localizeUrl, resumeUrl,
     <nav className="block lg:hidden">
       <header className="flex items-center justify-between">
         {/* Mobile logo */}
-        <a href={homeUrl} className="flex items-center gap-2">
+        <a href={homeUrl} className="flex items-center gap-2 group">
           {logo.image && (
             <img 
               src={logo.image} 
               alt={logo.alt || logo.title}
-              className="h-8 w-auto hover:scale-110 transition-transform duration-300"
+              className="h-8 w-auto rounded-full transition-transform duration-300"
             />
           )}
+          <span className=" text-primary text-2xl group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-300">{logo.title}</span>
         </a>
         {/* Mobile menu drawer/sheet */}
         <Sheet>
@@ -49,7 +50,7 @@ export const MobileNav = ({ logo, menu, locale, homeUrl, localizeUrl, resumeUrl,
               {/* Mobile action buttons */}
               <section className="flex flex-col gap-3">
                 <LanguageSwitcherMobile currentLocale={locale} />
-                <ThemeSwitcherMobile />
+                <ThemeSwitcherMobile locale={locale} />
                 <Button asChild>
                   <a href={resumeUrl} download>{resumeTitle}</a>
                 </Button>

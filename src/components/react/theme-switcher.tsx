@@ -44,7 +44,7 @@ export function ThemeSwitcher() {
   );
 }
 
-export function ThemeSwitcherMobile() {
+export function ThemeSwitcherMobile({ locale = "en" }: { locale?: string }) {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export function ThemeSwitcherMobile() {
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="theme" className="border-b-0">
         <AccordionTrigger className="text-md py-0 font-semibold hover:no-underline">
-          Theme
+          {locale === "nb" ? "Tema" : "Theme"}
         </AccordionTrigger>
         <AccordionContent className="mt-2 flex flex-col gap-2">
           <Button
@@ -76,7 +76,7 @@ export function ThemeSwitcherMobile() {
             className="w-full justify-start gap-2"
           >
             <Sun className="h-5 w-5" />
-            <span>Light Mode</span>
+            <span>{locale === "nb" ? "Lyst tema" : "Light mode"}</span>
           </Button>
           <Button
             variant={theme === "dark" ? "default" : "ghost"}
@@ -84,7 +84,7 @@ export function ThemeSwitcherMobile() {
             className="w-full justify-start gap-2"
           >
             <Moon className="h-5 w-5" />
-            <span>Dark Mode</span>
+            <span>{locale === "nb" ? "Mørk tema" : "Dark mode"}</span>
           </Button>
         </AccordionContent>
       </AccordionItem>

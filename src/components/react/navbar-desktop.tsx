@@ -13,9 +13,10 @@ export const DesktopNav = ({ logo, menu, locale, homeUrl, localizeUrl, resumeUrl
           <img
             src={logo.image}
             alt={logo.alt || logo.title}
-            className="h-10 w-auto hover:scale-110 transition-transform duration-300"
+            className="h-10 w-auto rounded-full transition-transform duration-300"
           />
         )}
+        <span className="text-primary text-2xl group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-300">{logo.title}</span>
       </a>
       {/* Right section: Theme switcher and action button */}
       <section className="flex gap-2 items-center ml-auto">
