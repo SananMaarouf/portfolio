@@ -123,8 +123,7 @@ export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarous
 							shrink-0 w-72 h-56 
 							bg-primary text-primary-foreground rounded-xl">
 							<a href={allProjectsUrl} className="w-full h-full flex flex-col justify-center items-center gap-2 p-4">
-								<p className="text-xl font-semibold">{t.see_all}</p>
-								<span className="text-sm opacity-80">{projects.length} total</span>
+								<p className="text-xl font-semibold text-center">{t.see_all}</p>
 							</a>
 						</motion.div>
 					)}
