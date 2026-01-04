@@ -75,9 +75,10 @@ export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarous
 							/* the project card */
 							<motion.div key={project._id} className="
 							group shrink-0 w-72 h-56 
-							bg-card hover:bg-foreground rounded-xl text-card-foreground 
-							transition-all duration-300 
-							ease-linear dark:hover:bg-card-foreground dark:hover:text-card">
+							bg-primary text-primary-foreground rounded-xl
+							hover:bg-secondary hover:text-secondary-foreground
+							transition-all duration-300 ease-linear flex flex-col
+							">
 								<a href={getProjectUrl(project.slug.current)} className="w-full h-full flex flex-col relative">
 									<div className="p-4 grow">
 										{/* project number and type */}
@@ -102,8 +103,8 @@ export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarous
 										<div className="flex flex-wrap-reverse gap-1 p-1 mr-1 mb-1 h-14 justify-end">
 											{project.technologies.slice(0, 4).map((tech: string, i: number) => (
 												<span key={i} className="
-													bg-card-foreground 
-													transition-all duration-300 text-primary 
+													bg-primary-foreground text-primary 
+													transition-all duration-300  
 													h-6 text-xs rounded-md p-1 
 													group-hover:bg-primary group-hover:text-primary-foreground">
 													{tech}
@@ -118,7 +119,9 @@ export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarous
 
 					{/* See all projects card */}
 					{hasMore && (
-						<motion.div className="group shrink-0 w-72 h-56 bg-card hover:bg-foreground rounded-xl text-card-foreground transition-all duration-300 ease-linear dark:hover:bg-card-foreground dark:hover:text-card flex">
+						<motion.div className="
+							shrink-0 w-72 h-56 
+							bg-primary text-primary-foreground rounded-xl">
 							<a href={allProjectsUrl} className="w-full h-full flex flex-col justify-center items-center gap-2 p-4">
 								<p className="text-xl font-semibold">{t.see_all}</p>
 								<span className="text-sm opacity-80">{projects.length} total</span>
