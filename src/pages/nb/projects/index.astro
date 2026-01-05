@@ -29,10 +29,10 @@ const getProjectTypeTranslation = (type: string) => {
 const getProjectUrl = (slug: string) => `/nb/projects/${slug}`;
 ---
 
-<Layout lang="nb">
+<Layout lang={lang}>
 	<section
 		id="projects"
-		class="my-10 text-foreground md:mx-auto font-silkscreen relative w-full xl:w-10/12 bg-transparent scroll-mt-24"
+		class="my-10 text-foreground md:mx-auto relative w-full bg-transparent scroll-mt-24"
 	>
 		<h1 class="text-3xl mb-6">{t.title}</h1>
 		{
@@ -45,7 +45,8 @@ const getProjectUrl = (slug: string) => `/nb/projects/${slug}`;
 							bg-primary text-primary-foreground rounded-xl
 							hover:bg-secondary hover:text-secondary-foreground
 							transition-all duration-300 ease-linear flex flex-col
-							">
+							"
+						>
 							<a
 								href={getProjectUrl(project.slug.current)}
 								class="w-full h-full flex flex-col relative"
@@ -72,13 +73,15 @@ const getProjectUrl = (slug: string) => `/nb/projects/${slug}`;
 										{project.technologies
 											.slice(0, 4)
 											.map((tech: string, i: number) => (
-												<span class="
+												<span
+													class="
 													bg-primary-foreground text-primary 
 													transition-all duration-300  
 													h-6 text-xs rounded-md p-1 
-													group-hover:bg-primary group-hover:text-primary-foreground">
+													group-hover:bg-primary group-hover:text-primary-foreground"
+												>
 													{tech}
-													</span>
+												</span>
 											))}
 									</div>
 								)}

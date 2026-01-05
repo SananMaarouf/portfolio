@@ -68,7 +68,7 @@ export default function Toolbox({ t }: ToolboxProps) {
       viewport={{ once: true }}
       className="
       text-foreground rounded-xl mx-auto md:mx-auto 
-      flex flex-col items-center font-silkscreen 
+      flex flex-col items-center  
       flex-wrap my-10 md:items-start ml-2 xl:w-10/12">
       <div className="w-full">
         <div className="flex items-center justify-between mb-4">

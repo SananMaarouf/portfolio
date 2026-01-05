@@ -34,8 +34,7 @@ export default function Introduction({ landingData }: IntroductionProps) {
         w-11/12 mx-auto 
         bg-transparent
         flex flex-col md:flex-row 
-        items-center justify-center 
-        font-silkscreen text-center 
+        items-center justify-center text-center 
         md:mt-10 md:items-center md:text-left
         "
     >

@@ -9,7 +9,7 @@ export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarous
 	// Early return if no projects
 	if (!projects || projects.length === 0) {
 		return (
-			<section className="my-10 md:mx-auto font-silkscreen relative w-full xl:w-10/12">
+			<section className="my-10 md:mx-auto  relative w-full xl:w-10/12">
 				<h1 className="text-3xl mb-2">{t.title}</h1>
 				<p className="text-lg">{t.no_projects}</p>
 			</section>
@@ -42,7 +42,7 @@ export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarous
 	const allProjectsUrl = locale === 'en' ? '/projects/' : `/${locale}/projects/`;
 
 	return (
-		<section id="projects" className="my-10 text-foreground md:mx-auto font-silkscreen relative w-full xl:w-10/12 bg-transparent scroll-mt-24">
+		<section id="projects" className="my-10 text-foreground md:mx-auto  relative w-full xl:w-10/12 bg-transparent scroll-mt-24">
 			<motion.section
 				ref={ref}
 				initial={{ opacity: 0, y: 200 }}
