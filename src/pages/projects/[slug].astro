@@ -59,26 +59,29 @@ if (!project) {
 					{project.version}
 				</span>
 			</section>
+
 			{
 				project.description && (
-					<div class="text-lg">
+					<section class="text-lg" aria-label="Project description">
 						<p>{project.description}</p>
-					</div>
+					</section>
 				)
 			}
 		</header>
 
 		{
 			project.heroImage && (
-				<SanityImage node={project.heroImage} alt={project.title} />
+				<figure class="m-0">
+					<SanityImage node={project.heroImage} alt={project.title} />
+				</figure>
 			)
 		}
 
 		{
 			project.date && (
-				<section class="flex gap-2 mb-4">
+				<section class="flex gap-2 mb-4" aria-label="Publication date">
 					<p>Published:</p>
-					<time class="">
+					<time class="" datetime={project.date}>
 						{new Date(project.date).toLocaleDateString("en-US", {
 							year: "numeric",
 							month: "long",
@@ -91,82 +94,93 @@ if (!project) {
 
 		{
 			project.body && (
-				<div class="prose dark:prose-invert mb-8">
+				<section class="prose text-foreground dark:prose-invert mb-8" aria-label="Project content">
 					<PortableText value={project.body} />
-				</div>
+				</section>
 			)
 		}
 
 		{
 			project.gallery && project.gallery.length > 0 && (
-				<div class="mb-8">
-					<h2 class="text-2xl font-bold mb-4">Gallery</h2>
+				<section class="mb-8" aria-labelledby="gallery-heading">
+					<h2 id="gallery-heading" class="text-2xl font-bold mb-4">Gallery</h2>
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 						{project.gallery.map((image) => (
-							<div>
+							<figure class="m-0">
 								<SanityImage
 									node={image}
 									alt={image.alt || image.title || project.title}
 								/>
 								{image.title && (
-									<p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+									<figcaption class="text-sm text-gray-600 dark:text-gray-400 mt-2">
 										{image.title}
-									</p>
+									</figcaption>
 								)}
-							</div>
+							</figure>
 						))}
 					</div>
-				</div>
+				</section>
 			)
 		}
 
 		{
 			project.technologies && project.technologies.length > 0 && (
-				<div class="mb-8">
-					<h2 class="text-xl mb-4">Technologies</h2>
-					<div class="flex flex-wrap gap-2">
+				<section class="mb-8" aria-labelledby="technologies-heading">
+					<h2 id="technologies-heading" class="mb-2 underline">Technologies:</h2>
+					<ul class="flex flex-wrap gap-2 list-none p-0 m-0">
 						{project.technologies.map((tech) => (
-							<span class="bg-primary text-primary-foreground px-3 py-1 rounded-md text-sm">
-								{tech}
-							</span>
+							<li>
+								<span class="bg-primary text-primary-foreground px-3 py-1 rounded-md text-sm">
+									{tech}
+								</span>
+							</li>
 						))}
-					</div>
-				</div>
+					</ul>
+				</section>
 			)
 		}
 
-		<div class="flex flex-col gap-2 mt-8">
-			<p class="underline">Links:</p>
-			<div class="flex gap-4">
-				{
-					project.githubUrl && (
-						<Button className="hover:scale-105">
-							<a
-								href={project.githubUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								GitHub
-								<ExternalLink className="inline-block ml-2" />
-							</a>
-						</Button>
-					)
-				}
-				{
-					project.liveUrl && (
-						<Button className="hover:scale-105">
-							<a
-								href={project.liveUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								Website
-								<ExternalLink className="inline-block ml-2" />
-							</a>
-						</Button>
-					)
-				}
-			</div>
-		</div>
+		<section class="flex flex-col gap-2 mt-8" aria-labelledby="project-links-heading">
+			<h2 id="project-links-heading" class="underline text-base font-normal m-0">
+				Links:
+			</h2>
+
+			<nav aria-label="Project links">
+				<ul class="flex gap-4 list-none p-0 m-0">
+					{
+						project.githubUrl && (
+							<li>
+								<Button className="hover:scale-105">
+									<a
+										href={project.githubUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										GitHub
+										<ExternalLink className="inline-block ml-2" />
+									</a>
+								</Button>
+							</li>
+						)
+					}
+					{
+						project.liveUrl && (
+							<li>
+								<Button className="hover:scale-105">
+									<a
+										href={project.liveUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										Website
+										<ExternalLink className="inline-block ml-2" />
+									</a>
+								</Button>
+							</li>
+						)
+					}
+				</ul>
+			</nav>
+		</section>
 	</article>
 </Layout>
