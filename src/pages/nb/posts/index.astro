@@ -1,6 +1,7 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import { getPosts } from '@/utils/sanity';
+import SanityImage from '@/components/SanityImage.astro';
 
 const lang = 'nb';
 const posts = await getPosts(lang);
@@ -13,30 +14,57 @@ const t = {
 const getPostUrl = (slug: string) => `/nb/post/${slug}`;
 ---
 
-<Layout lang="nb">
-	<section id="posts" class="my-10 text-foreground md:mx-auto  relative w-full xl:w-10/12 bg-transparent scroll-mt-24">
+<Layout lang={lang}>
+	<section
+		id="projects"
+		class="my-10 text-foreground md:mx-auto relative w-full bg-transparent scroll-mt-24"
+	>
 		<h1 class="text-3xl mb-6">{t.title}</h1>
-		{posts && posts.length > 0 ? (
-			<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-				{posts.map((post, index) => (
-					<div class="group w-full h-56 bg-card hover:bg-foreground rounded-xl text-card-foreground transition-all duration-300 ease-linear dark:hover:bg-card-foreground dark:hover:text-card overflow-hidden">
-						<a href={getPostUrl(post.slug.current)} class="w-full h-full flex flex-col relative">
-							<div class="p-4 grow">
-								<div class="flex justify-between">
-									<h2 class="text-2xl">P{index + 1}</h2>
-									<p class="text-xs my-auto opacity-70 line-clamp-1">{new Date(post._createdAt).toLocaleDateString('nb-NO')}</p>
-								</div>
-								<p class="text-2xl line-clamp-1">{post.title ?? post.slug.current}</p>
-								<div class="text-sm mt-2 line-clamp-3">
-									  <p>{post.excerpt ?? ''}</p>
-								</div>
-							</div>
-						</a>
-					</div>
-				))}
-			</div>
-		) : (
-			<p class="text-lg">{t.no_posts}</p>
-		)}
+		{
+			posts && posts.length > 0 ? (
+				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+					{posts.map((post, index) => (
+							<article
+							class="
+							group shrink-0 h-fit overflow-hidden 
+							bg-primary text-primary-foreground rounded-xl
+							hover:bg-secondary hover:text-secondary-foreground
+							transition-all duration-300 ease-linear flex flex-col
+							"
+						>
+							<a href={getPostUrl(post.slug.current)} class="w-full h-full flex flex-col relative">
+								<section class="p-4 grow flex flex-col gap-2">
+									<div class="flex justify-between">
+										<p class="text-2xl">0{index + 1}</p>
+										<time
+											datetime={post._createdAt}
+											class="text-sm my-auto"
+										>
+											{new Date(post._createdAt).toLocaleDateString(lang)}
+										</time>
+									</div>
+									{post.mainImage && (
+										<figure>
+											<SanityImage
+												node={post.mainImage}
+												width={600}
+												alt={post.mainImage.alt || post.title}
+												class="h-44 w-full object-cover rounded-lg"
+											/>
+										</figure>
+									)}
+									<h2 class="text-2xl whitespace-normal wrap-break-word">
+									{post.title ?? post.slug.current}
+									</h2>
+									<p class="text-sm mt-2 line-clamp-2">{post.excerpt ?? ""}</p>
+								</section>
+							</a>
+							</article>
+					))}
+				</div>
+			) : (
+				<p class="text-lg">{t.no_posts}</p>
+			)
+		}
 	</section>
 </Layout>

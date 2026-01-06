@@ -4,8 +4,7 @@ import {sanityClient} from 'sanity:client'
 
 const builder = createImageUrlBuilder(sanityClient)
 
-const {node} = Astro.props
-const {width = 960} = Astro.props
+const { node, width = 960, alt = '', class: className = '' } = Astro.props
 
 // See https://www.sanity.io/docs/presenting-images for general documentation on
 // presenting images, and https://www.sanity.io/docs/image-url for specifics on
@@ -13,4 +12,11 @@ const {width = 960} = Astro.props
 const image = node && builder.image(node as SanityImageSource).width(width)
 ---
 
-{image && <img src={image.url()} alt={node.alt || ''} title={node.alt} />}
+{image && (
+	<img
+		src={image.url()}
+		alt={alt || node.alt || ''}
+		title={node.alt}
+		class={className}
+	/>
+)}

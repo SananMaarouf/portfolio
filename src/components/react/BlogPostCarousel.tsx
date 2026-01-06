@@ -58,20 +58,24 @@ export default function BlogPostCarousel({ posts, t, locale }: BlogPostCarouselP
 			>
 				{/* indicate to user */}
 				<h1 className="text-3xl mb-2">{t.title}</h1>
-				<motion.p
-					animate={{ scale: [1, 1.1, 1] }}
-					transition={{ repeat: 10, duration: 2 }}
-					className="block xl:hidden absolute right-2 top-2"
-				>
-					swipe ➡️
-				</motion.p>
-				<motion.p
-					animate={{ scale: [1, 1.1, 1] }}
-					transition={{ repeat: 10, duration: 2 }}
-					className="hidden xl:block absolute right-2 top-2"
-				>
-					scroll ➡️
-				</motion.p>
+				{posts.length > 1 && (
+					<>
+						<motion.p
+							animate={{ scale: [1, 1.1, 1] }}
+							transition={{ repeat: 10, duration: 2 }}
+							className="block xl:hidden absolute right-2 top-2"
+						>
+							swipe ➡️
+						</motion.p>
+						<motion.p
+							animate={{ scale: [1, 1.1, 1] }}
+							transition={{ repeat: 10, duration: 2 }}
+							className="hidden xl:block absolute right-2 top-2"
+						>
+							scroll ➡️
+						</motion.p>
+					</>
+				)}
 
 				{/* horizontal slider */}
 				<div className="overflow-x-scroll flex gap-6 py-4 scrollbar-hide">
@@ -80,9 +84,10 @@ export default function BlogPostCarousel({ posts, t, locale }: BlogPostCarouselP
 							/* the post card */
 							<motion.div key={post.slug.current} className="
 							group shrink-0 w-72 h-56 
-							bg-card hover:bg-foreground rounded-xl text-card-foreground 
-							transition-all duration-300 
-							ease-linear dark:hover:bg-card-foreground dark:hover:text-card">
+							bg-primary text-primary-foreground rounded-xl
+							hover:bg-secondary hover:text-secondary-foreground
+							transition-all duration-300 ease-linear flex flex-col
+							">
 								<a href={getPostUrl(post.slug.current)} className="w-full h-full flex flex-col relative">
 									<div className="p-4 grow">
 										{/* post number and date */}
