@@ -46,9 +46,10 @@ if (!post) {
   <article class="max-w-4xl mx-auto px-4 py-8">
     <header class="mb-8">
       <h1 class="text-4xl font-bold mb-4">{post.title}</h1>
-      {post.publishedAt && (
-        <time class="text-gray-600 dark:text-gray-400">
-          {new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+      {(post.publishedAt || post._createdAt) && (
+        <time
+          datetime={post.publishedAt ?? post._createdAt}>
+          {new Date(post.publishedAt ?? post._createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
         </time>
       )}
     </header>

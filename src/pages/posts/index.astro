@@ -12,6 +12,17 @@ const t = {
 };
 
 const getPostUrl = (slug: string) => `/post/${slug}`;
+
+const dateLocale = "en-US";
+
+const formatDate = (dateString: string) => {
+	const date = new Date(dateString);
+	return date.toLocaleDateString(dateLocale, {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+	});
+};
 ---
 
 <Layout lang={lang}>
@@ -37,10 +48,10 @@ const getPostUrl = (slug: string) => `/post/${slug}`;
 									<div class="flex justify-between">
 										<p class="text-2xl">0{index + 1}</p>
 										<time
-											datetime={post._createdAt}
+											datetime={post.publishedAt ?? post._createdAt}
 											class="text-sm my-auto"
 										>
-											{new Date(post._createdAt).toLocaleDateString(lang)}
+											{formatDate(post.publishedAt ?? post._createdAt)}
 										</time>
 									</div>
 									{post.mainImage && (
