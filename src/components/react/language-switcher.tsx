@@ -1,4 +1,4 @@
-import { Languages } from "lucide-react";
+import { Languages, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,23 +55,25 @@ export function LanguageSwitcher({ currentLocale }: LanguageSwitcherProps) {
           <NavigationMenuTrigger>
             <Languages className="h-5 w-5" />
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="bg-popover text-popover-foreground">
-            <div className="w-48 p-2">
+          <NavigationMenuContent className="">
+            <div className="w-48 p-2 gap-2 flex flex-col">
               <button
                 onClick={() => switchLanguage("en")}
-                className={`w-full text-left px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors ${
-                  locale === "en" ? "bg-accent text-accent-foreground" : ""
+                className={`w-full text-left px-3 py-2 rounded-md hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-between ${
+                  locale === "en" ? "bg-primary text-primary-foreground" : ""
                 }`}
               >
-                🇬🇧 English
+                <span>🇬🇧 English</span>
+                {locale === "en" && <Check className="h-4 w-4" />}
               </button>
               <button
                 onClick={() => switchLanguage("nb")}
-                className={`w-full text-left px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors ${
-                  locale === "nb" ? "bg-accent text-accent-foreground" : ""
+                className={`w-full text-left px-3 py-2 rounded-md hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-between ${
+                  locale === "nb" ? "bg-primary text-primary-foreground" : ""
                 }`}
               >
-                🇳🇴 Norsk
+                <span>🇳🇴 Norsk</span>
+                {locale === "nb" && <Check className="h-4 w-4" />}
               </button>
             </div>
           </NavigationMenuContent>
@@ -117,18 +119,24 @@ export function LanguageSwitcherMobile({ currentLocale }: LanguageSwitcherProps)
           <Button
             variant={locale === "en" ? "default" : "ghost"}
             onClick={() => switchLanguage("en")}
-            className="w-full justify-start gap-2"
+            className="w-full justify-between gap-2"
           >
-            <span>🇬🇧</span>
-            <span>English</span>
+            <div className="flex items-center gap-2">
+              <span>🇬🇧</span>
+              <span>English</span>
+            </div>
+            {locale === "en" && <Check className="h-4 w-4" />}
           </Button>
           <Button
             variant={locale === "nb" ? "default" : "ghost"}
             onClick={() => switchLanguage("nb")}
             className="w-full justify-start gap-2"
           >
-            <span>🇳🇴</span>
-            <span>Norsk</span>
+            <div className="flex items-center gap-2">
+              <span>🇳🇴</span>
+              <span>Norsk</span>
+            </div>
+            {locale === "nb" && <Check className="h-4 w-4" />}
           </Button>
         </AccordionContent>
       </AccordionItem>

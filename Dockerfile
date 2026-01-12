@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Use BuildKit cache mount to speed repeated installs
-RUN --mount=type=cache,target=/root/.npm npm ci --legacy-peer-deps
+RUN --mount=type=cache,target=/root/.npm npm ci --force
 
 ############################################
 # builder stage: copy source & build static site

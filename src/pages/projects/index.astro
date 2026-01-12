@@ -1,25 +1,25 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { getProjects } from '@/utils/sanity';
+import Layout from "../../layouts/Layout.astro";
+import { getProjects } from "@/utils/sanity";
 
-const lang = 'en';
+const lang = "en";
 const projects = await getProjects(lang);
 
 const t = {
-	title: 'Projects',
-	web: 'Web',
-	mobile: 'Mobile',
-	both: 'Web / Mobile',
-	no_projects: 'No projects available',
+	title: "Projects",
+	web: "Web",
+	mobile: "Mobile",
+	both: "Web / Mobile",
+	no_projects: "No projects available",
 };
 
 const getProjectTypeTranslation = (type: string) => {
 	switch (type) {
-		case 'web':
+		case "web":
 			return t.web;
-		case 'mobile':
+		case "mobile":
 			return t.mobile;
-		case 'web / mobile':
+		case "web / mobile":
 			return t.both;
 		default:
 			return type;
@@ -29,39 +29,69 @@ const getProjectTypeTranslation = (type: string) => {
 const getProjectUrl = (slug: string) => `/projects/${slug}`;
 ---
 
-<Layout lang="en">
-	<section id="projects" class="my-10 text-foreground md:mx-auto font-silkscreen relative w-full xl:w-10/12 bg-transparent scroll-mt-24">
+<Layout lang={lang}>
+	<section
+		id="projects"
+		class="my-10 text-foreground md:mx-auto relative w-full bg-transparent scroll-mt-24"
+	>
 		<h1 class="text-3xl mb-6">{t.title}</h1>
-		{projects && projects.length > 0 ? (
-			<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-				{projects.map((project, index) => (
-					<div class="group w-full h-56 bg-card hover:bg-foreground rounded-xl text-card-foreground transition-all duration-300 ease-linear dark:hover:bg-card-foreground dark:hover:text-card overflow-hidden">
-						<a href={getProjectUrl(project.slug.current)} class="w-full h-full flex flex-col relative">
-							<div class="p-4 grow">
-								<div class="flex justify-between">
-									<h2 class="text-2xl">O{index + 1}</h2>
-									<p class="text-sm my-auto">{getProjectTypeTranslation(project.projectType || '')}</p>
+		{
+			projects && projects.length > 0 ? (
+				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+					{projects.map((project, index) => (
+						<div
+							class="
+							group shrink-0  h-56 
+							bg-primary text-primary-foreground rounded-xl
+							hover:bg-secondary hover:text-secondary-foreground
+							transition-all duration-300 ease-linear flex flex-col
+							"
+						>
+							<a
+								href={getProjectUrl(project.slug.current)}
+								class="w-full h-full flex flex-col relative"
+							>
+								<div class="p-4 grow">
+									<div class="flex justify-between">
+										<h2 class="text-2xl">O{index + 1}</h2>
+										<p class="text-sm my-auto">
+											{getProjectTypeTranslation(project.projectType || "")}
+										</p>
+									</div>
+									<p class="text-2xl line-clamp-1">{project.title}</p>
+									<div class="text-sm mt-2 line-clamp-3">
+										<p>
+											{project.shortDescription ||
+												(typeof project.description === "string"
+													? project.description
+													: "")}
+										</p>
+									</div>
 								</div>
-								<p class="text-2xl line-clamp-1">{project.title}</p>
-								<div class="text-sm mt-2 line-clamp-3">
-									<p>{project.shortDescription || (typeof project.description === 'string' ? project.description : '')}</p>
-								</div>
-							</div>
-							{project.technologies && project.technologies.length > 0 && (
-								<div class="flex flex-wrap-reverse gap-1 p-1 mr-1 mb-1 h-14 justify-end">
-									{project.technologies.slice(0, 4).map((tech: string, i: number) => (
-										<span class="bg-card-foreground transition-all duration-300 text-primary h-6 text-xs rounded-md p-1 group-hover:bg-primary group-hover:text-primary-foreground">
-											{tech}
-										</span>
-									))}
-								</div>
-							)}
-						</a>
-					</div>
-				))}
-			</div>
-		) : (
-			<p class="text-lg">{t.no_projects}</p>
-		)}
+								{project.technologies && project.technologies.length > 0 && (
+									<div class="flex flex-wrap-reverse gap-1 p-1 mr-1 mb-1 h-14 justify-end">
+										{project.technologies
+											.slice(0, 4)
+											.map((tech: string, i: number) => (
+												<span
+													class="
+													bg-primary-foreground text-primary 
+													transition-all duration-300  
+													h-6 text-xs rounded-md p-1 
+													group-hover:bg-primary group-hover:text-primary-foreground"
+												>
+													{tech}
+												</span>
+											))}
+									</div>
+								)}
+							</a>
+						</div>
+					))}
+				</div>
+			) : (
+				<p class="text-lg">{t.no_projects}</p>
+			)
+		}
 	</section>
 </Layout>

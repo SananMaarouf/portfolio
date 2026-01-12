@@ -1,23 +1,9 @@
-import { motion } from "motion/react";
 import { useState } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { motion } from "motion/react";
 import { PanelTopOpen, PanelBottomOpen } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import type { ToolboxProps } from "../../../types/toolbox";
 
-interface ToolboxProps {
-  t: {
-    title: string;
-    backend: string;
-    frontend: string;
-    cloudBaas: string;
-    deployment: string;
-    db: string;
-  }
-}
 
 export default function Toolbox({ t }: ToolboxProps) {
   const [openItems, setOpenItems] = useState<string[]>([]);
@@ -67,9 +53,8 @@ export default function Toolbox({ t }: ToolboxProps) {
     rounded-2xl p-2 font-semibold text-center
     items-center justify-center 
     border-2 border-border  
-    bg-card text-card-foreground
-    hover:bg-foreground hover:text-card-foreground
-    dark:hover:bg-card-foreground dark:hover:text-card
+    bg-primary text-primary-foreground 
+    hover:bg-secondary hover:text-secondary-foreground
     transition-all duration-300 ease-linear
     w-28 h-28 hover:scale-110
     md:w-28 md:h-32
@@ -83,7 +68,7 @@ export default function Toolbox({ t }: ToolboxProps) {
       viewport={{ once: true }}
       className="
       text-foreground rounded-xl mx-auto md:mx-auto 
-      flex flex-col items-center font-silkscreen 
+      flex flex-col items-center  
       flex-wrap my-10 md:items-start ml-2 xl:w-10/12">
       <div className="w-full">
         <div className="flex items-center justify-between mb-4">
@@ -91,14 +76,14 @@ export default function Toolbox({ t }: ToolboxProps) {
           {openItems.length > 0 ? (
             <button
               onClick={() => setOpenItems([])}
-              className="text-sm md:text-base px-3 py-1.5 rounded-lg border-2 border-border bg-card hover:bg-foreground hover:text-card transition-colors duration-200 flex items-center gap-2"
+              className="text-sm md:text-base px-3 py-1.5 rounded-lg border-2 border-border bg-primary text-primary-foreground flex items-center gap-2"
             >
               <PanelBottomOpen className="w-4 h-4" />
             </button>
           ) : (
             <button
               onClick={() => setOpenItems(['backend', 'frontend', 'cloudbaas', 'deployment', 'databases'])}
-              className="text-sm md:text-base px-3 py-1.5 rounded-lg border-2 border-border bg-card hover:bg-foreground hover:text-card transition-colors duration-200 flex items-center gap-2"
+              className="text-sm md:text-base px-3 py-1.5 rounded-lg border-2 border-border bg-primary text-primary-foreground flex items-center gap-2"
             >
               <PanelTopOpen className="w-4 h-4" />
             </button>

@@ -1,0 +1,86 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Button } from '@/components/ui/button';
+
+const translations = {
+  en: {
+    title: '404 - Page Not Found',
+    heading: 'Oops! Page Not Found',
+    message: "The page you're looking for doesn't exist or has been moved.",
+    homeButton: 'Go Back Home',
+    homeLink: '/'
+  },
+  nb: {
+    title: '404 - Siden ikke funnet',
+    heading: 'Oops! Siden ikke funnet',
+    message: 'Siden du leter etter eksisterer ikke eller har blitt flyttet.',
+    homeButton: 'Gå tilbake til hjem',
+    homeLink: '/nb'
+  }
+};
+
+// Try to detect language from URL, fallback to default
+// Note: In static builds, Astro.url.pathname will be the path of the 404 page itself (e.g. /404.html)
+const lang = Astro.url.pathname.startsWith('/nb/') ? 'nb' : 'en';
+const t = translations[lang];
+---
+
+<Layout lang={lang}>
+	<main class="min-h-screen flex items-center justify-center py-20">
+		<div class="text-center space-y-6 max-w-2xl px-4">
+			<h1 class="text-9xl font-bold text-primary">404</h1>
+			<h2 id="error-heading" class="text-4xl font-semibold">{t.heading}</h2>
+			<p id="error-message" class="text-xl text-muted-foreground">{t.message}</p>
+			<div class="pt-6">
+				<a id="error-home-link" href={t.homeLink}>
+					<Button size="lg" className="font-semibold">
+						<span id="error-home-button">{t.homeButton}</span>
+					</Button>
+				</a>
+			</div>
+		</div>
+	</main>
+</Layout>
+
+<script>
+  // Client-side language detection for static 404 page
+  const path = window.location.pathname;
+  if (path.startsWith('/nb/')) {
+    const translations = {
+      heading: 'Oops! Siden ikke funnet',
+      message: 'Siden du leter etter eksisterer ikke eller har blitt flyttet.',
+      homeButton: 'Gå tilbake til hjem',
+      homeLink: '/nb'
+    };
+
+    const heading = document.getElementById('error-heading');
+    const message = document.getElementById('error-message');
+    const homeLink = document.getElementById('error-home-link');
+    const homeButton = document.getElementById('error-home-button');
+
+    if (heading) heading.textContent = translations.heading;
+    if (message) message.textContent = translations.message;
+    if (homeLink) (homeLink as HTMLAnchorElement).href = translations.homeLink;
+    if (homeButton) homeButton.textContent = translations.homeButton;
+    
+    // Update html lang attribute
+    document.documentElement.lang = 'nb';
+  }
+</script>
+
+<style>
+	main {
+		animation: fadeIn 0.5s ease-in;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>

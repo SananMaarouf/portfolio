@@ -21,8 +21,9 @@ export default defineConfig({
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'nb'],
-    fallback: {
-      nb: 'en'
+    routing: {
+      prefixDefaultLocale: false,
+      redirectToDefaultLocale: false
     }
   },
   integrations: [
