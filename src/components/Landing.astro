@@ -1,5 +1,6 @@
 ---
 import Introduction from './react/introduction';
+import LandingThree from './react/landing-three';
 import { getLanding } from '@/utils/sanity';
 
 interface Props {
@@ -12,4 +13,9 @@ const { lang = 'en' } = Astro.props;
 const landingData = await getLanding(lang);
 ---
 
-<Introduction client:load landingData={landingData} />
+<section class="relative isolate overflow-hidden">
+	<LandingThree client:load />
+	<div class="landing-gated">
+		<Introduction client:load landingData={landingData} />
+	</div>
+</section>

@@ -193,6 +193,24 @@ html body[data-scroll-locked] {
   margin-right: 0 !important;
 }
 
+.landing-gated {
+  transition: opacity 250ms linear;
+}
+
+.landing-gated--navbar {
+  transition: opacity 900ms ease;
+}
+
+html[data-landing-gate="true"]:not([data-landing-ready="true"]) .landing-gated {
+  opacity: 0;
+  visibility: hidden;
+}
+
+html[data-landing-gate="true"][data-landing-ready="true"] .landing-gated {
+  opacity: 1;
+  visibility: visible;
+}
+
 @layer base {
   button:not(:disabled),
   [role="button"]:not(:disabled) {

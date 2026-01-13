@@ -25,6 +25,9 @@ const menuTranslations = {
 };
 
 const menu = menuTranslations[locale];
+
+const pathname = Astro.url?.pathname ?? '';
+const isLanding = pathname === '/' || pathname === '/nb' || pathname === '/nb/';
 ---
 <!doctype html>
 
@@ -41,9 +44,18 @@ const menu = menuTranslations[locale];
 				(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 			document.documentElement.classList.toggle('dark', theme === 'dark');
 		</script>
+		{isLanding && (
+			<script is:inline>
+				// Gate landing content until Three.js has rendered at least once.
+				document.documentElement.dataset.landingGate = 'true';
+				delete document.documentElement.dataset.landingReady;
+			</script>
+		)}
 	</head>
-	<Navbar client:load logo={{ title: navbarTitle, image: "/sanan1.webp" }} locale={locale} menu={menu} />
 	<body class="bg-background text-foreground transition-colors duration-300 ease-linear">
+		<div class="landing-gated landing-gated--navbar">
+			<Navbar client:load logo={{ title: navbarTitle, image: "/sanan1.webp" }} locale={locale} menu={menu} />
+		</div>
 		<div class="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
 			<slot />
 		</div>
