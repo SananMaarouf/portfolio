@@ -11,20 +11,19 @@ export default function LandingThree() {
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		const playedKey = 'landing:hyperspacePlayed';
 		let shouldPlayEntry = true;
-		// Development: always play animation
-		// try {
-		// 	shouldPlayEntry = sessionStorage.getItem(playedKey) !== '1';
-		// } catch {
-		// 	// Ignore storage errors (privacy mode, etc.) and just play entry.
-		// 	shouldPlayEntry = true;
-		// }
+		 try {
+		 	shouldPlayEntry = sessionStorage.getItem(playedKey) !== '1';
+		 } catch {
+		 	// Ignore storage errors (privacy mode, etc.) and just play entry.
+		 	shouldPlayEntry = true;
+		 }
 		const markPlayed = () => {
-			// Development: don't mark as played
-			// try {
-			// 	sessionStorage.setItem(playedKey, '1');
-			// } catch {
-			// 	// Ignore
-			// }
+			 try {
+			 	sessionStorage.setItem(playedKey, '1');
+			 } catch {
+				// Ignore storage errors (privacy mode, etc.)
+
+			}
 		};
 
 		let landingIsReady = false;
@@ -57,11 +56,13 @@ export default function LandingThree() {
 		renderer.domElement.style.height = '100%';
 
 		const getUiColor = () => {
-			// This resolves to an rgb(...) string in computed styles.
-			return getComputedStyle(document.body).color || 'rgb(0,0,0)';
+			// Hardcode colors based on theme
+			const isDark = document.documentElement.classList.contains('dark');
+			return isDark ? '#FFFFFF' : '#000000';
 		};
 		const getBgColor = () => {
-			return getComputedStyle(document.body).backgroundColor || 'rgb(255,255,255)';
+			const isDark = document.documentElement.classList.contains('dark');
+			return isDark ? '#454545' : '#EDEDED';
 		};
 
 		// Space/starfield
@@ -180,7 +181,7 @@ export default function LandingThree() {
 
 		let lastTimeMs = 0;
 		const entryDelayMs = 4000;
-		const entryDurationMs = 5800;
+		const entryDurationMs = 4100;
 		let entryStartMs: number | null = null;
 
 		const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
@@ -362,11 +363,15 @@ export default function LandingThree() {
 				const dustFade = easeOutCubic(remap01(entryProgress, 0.3, 1));
 				dustMaterial.opacity = dustBaseOpacity * dustFade;
 
+				// Reveal content early during the explosion for a smoother transition
+				if (entryProgress >= 0.30 && !landingIsReady) {
+					markReady();
+				}
+
 				if (entryProgress >= 1) {
 					starsMaterial.opacity = starsBaseOpacity;
 					dustMaterial.opacity = dustBaseOpacity;
 					markPlayed();
-					markReady();
 					shouldPlayEntry = false;
 				}
 			} else {
@@ -411,22 +416,29 @@ export default function LandingThree() {
 		resizeObserver.observe(container);
 
 		const updateThemeColor = () => {
-			const uiColor = getUiColor();
-			starsMaterial.color.set(uiColor);
-			dustMaterial.color.set(uiColor);
-			streakMaterial.color.set(uiColor);
+			// Use requestAnimationFrame to ensure styles have been recomputed
+			requestAnimationFrame(() => {
+				const uiColor = getUiColor();
+				const bgColor = getBgColor();
+				
+				starsMaterial.color.set(uiColor);
+				dustMaterial.color.set(uiColor);
+				streakMaterial.color.set(uiColor);
 
-			// Update fog to keep the scene feeling integrated with the page.
-			if (activeConfig) {
-				scene.fog = new THREE.Fog(getBgColor(), activeConfig.fogNear, activeConfig.fogFar);
-			} else {
-				scene.fog = new THREE.Fog(getBgColor(), 8, 28);
-			}
+				// Update fog to keep the scene feeling integrated with the page.
+				if (activeConfig) {
+					scene.fog = new THREE.Fog(bgColor, activeConfig.fogNear, activeConfig.fogFar);
+				} else {
+					scene.fog = new THREE.Fog(bgColor, 8, 28);
+				}
 
-			starsMaterial.needsUpdate = true;
-			dustMaterial.needsUpdate = true;
-			streakMaterial.needsUpdate = true;
-			if (prefersReducedMotion) renderer.render(scene, camera);
+				starsMaterial.needsUpdate = true;
+				dustMaterial.needsUpdate = true;
+				streakMaterial.needsUpdate = true;
+				
+				// Force immediate render for instant theme feedback
+				renderer.render(scene, camera);
+			});
 		};
 
 		const themeObserver = new MutationObserver(() => updateThemeColor());

@@ -62,7 +62,7 @@ const isLanding = pathname === '/' || pathname === '/nb' || pathname === '/nb/';
 		<div class="landing-gated landing-gated--navbar">
 			<Navbar client:load logo={{ title: navbarTitle, image: "/sanan1.webp" }} locale={locale} menu={menu} />
 		</div>
-		<div class="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
+		<div class={`max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 ${isLanding ? 'landing-gated' : ''}`}>
 			<slot />
 		</div>
 	</body>
