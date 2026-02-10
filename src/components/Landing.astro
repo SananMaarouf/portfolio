@@ -1,6 +1,5 @@
 ---
 import Introduction from './react/introduction';
-import LandingThree from './react/landing-three';
 import { getLanding } from '@/utils/sanity';
 
 interface Props {
@@ -15,9 +14,6 @@ const landingData = await getLanding(lang);
 
 
 <section class="relative isolate">
-	<div class="pointer-events-none absolute inset-y-0 left-1/2 w-screen -translate-x-1/2 -z-10 overflow-hidden">
-		<LandingThree client:load />
-	</div>
 	<div class="landing-gated">
 		<Introduction client:load landingData={landingData} />
 	</div>

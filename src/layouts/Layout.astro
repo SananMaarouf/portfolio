@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { Navbar } from '@/components/react/navbar';
+import LandingThree from '@/components/react/landing-three';
 
 interface Props {
 	lang?: string;
@@ -53,6 +54,11 @@ const isLanding = pathname === '/' || pathname === '/nb' || pathname === '/nb/';
 		)}
 	</head>
 	<body class="bg-background text-foreground transition-colors duration-300 ease-linear">
+		{isLanding && (
+			<div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+				<LandingThree client:load />
+			</div>
+		)}
 		<div class="landing-gated landing-gated--navbar">
 			<Navbar client:load logo={{ title: navbarTitle, image: "/sanan1.webp" }} locale={locale} menu={menu} />
 		</div>

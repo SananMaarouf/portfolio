@@ -179,8 +179,8 @@ export default function LandingThree() {
 		};
 
 		let lastTimeMs = 0;
-		const entryDelayMs = 3000;
-		const entryDurationMs = 2800;
+		const entryDelayMs = 4000;
+		const entryDurationMs = 5800;
 		let entryStartMs: number | null = null;
 
 		const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
@@ -201,7 +201,7 @@ export default function LandingThree() {
 			return { geometry, positions };
 		};
 
-		const updateBigBang = (stars: StarField, progress01: number) => {
+		const updateBigBang = (stars: StarField, progress01: number, shakeIntensity: number) => {
 			// Big bang: stars expand from center sphere to final positions
 			const eased = easeOutExpo(progress01);
 			const count = stars.targetPositions.length / 3;
@@ -215,9 +215,14 @@ export default function LandingThree() {
 				const ty = stars.targetPositions[i3 + 1];
 				const tz = stars.targetPositions[i3 + 2];
 
-				stars.positions[i3 + 0] = lerp(sx, tx, eased);
-				stars.positions[i3 + 1] = lerp(sy, ty, eased);
-				stars.positions[i3 + 2] = lerp(sz, tz, eased);
+				// Add shake/vibration to starting positions
+				const shakeX = (Math.random() - 0.5) * shakeIntensity;
+				const shakeY = (Math.random() - 0.5) * shakeIntensity;
+				const shakeZ = (Math.random() - 0.5) * shakeIntensity;
+
+				stars.positions[i3 + 0] = lerp(sx + shakeX, tx, eased);
+				stars.positions[i3 + 1] = lerp(sy + shakeY, ty, eased);
+				stars.positions[i3 + 2] = lerp(sz + shakeZ, tz, eased);
 			}
 
 			(stars.geometry.getAttribute('position') as THREE.BufferAttribute).needsUpdate = true;
@@ -233,7 +238,7 @@ export default function LandingThree() {
 
 		let starsField = makeStars(activeConfig.starsCount, activeConfig.spread);
 		let streakField = makeStreaks(starsField);
-		const starsBaseOpacity = 0.40;
+		const starsBaseOpacity = 1.0;
 		const starsMaterial = new THREE.PointsMaterial({
 			color: new THREE.Color(getUiColor()),
 			size: activeConfig.starsSize,
@@ -251,20 +256,20 @@ export default function LandingThree() {
 		const streakMaterial = new THREE.LineBasicMaterial({
 			color: new THREE.Color(getUiColor()),
 			transparent: true,
-			opacity: 0,
+			opacity: 0.50,
 			blending: THREE.AdditiveBlending,
 		});
 		const streaks = new THREE.LineSegments(streakField.geometry, streakMaterial);
 		scene.add(streaks);
 
 		let dustField = makeStars(activeConfig.dustCount, Math.max(18, activeConfig.spread * 0.65));
-		const dustBaseOpacity = 0.12;
+		const dustBaseOpacity = 0.50;
 		const dustMaterial = new THREE.PointsMaterial({
 			color: new THREE.Color(getUiColor()),
 			size: activeConfig.dustSize,
 			sizeAttenuation: true,
 			transparent: true,
-			opacity: 0,
+			opacity: 0.50,
 			depthWrite: false,
 			blending: THREE.AdditiveBlending,
 		});
@@ -337,8 +342,21 @@ export default function LandingThree() {
 			const cfg = activeConfig ?? getConfig(window.innerWidth, window.innerHeight);
 
 			if (shouldPlayEntry) {
+				const timeSinceStart = t - entryStartMs;
 				const entryProgress = clamp01((t - entryStartMs - entryDelayMs) / entryDurationMs);
-				updateBigBang(starsField, entryProgress);
+				
+				// Calculate shake intensity during delay phase
+				let shakeIntensity = 0;
+				if (timeSinceStart < entryDelayMs) {
+					// Build up shake intensity as we approach the explosion
+					const delayProgress = timeSinceStart / entryDelayMs;
+					// Smooth pulsing using sine wave (0-1 range)
+					const shake = Math.sin(timeSinceStart * 0.0009) * 3 + 0.5;
+					// Cubic easing for intensity build-up, multiplied by smooth pulse
+					shakeIntensity = 1 * delayProgress * delayProgress * delayProgress * shake;
+				}
+				
+				updateBigBang(starsField, entryProgress, shakeIntensity);
 
 				// Fade in dust during expansion
 				const dustFade = easeOutCubic(remap01(entryProgress, 0.3, 1));
