@@ -9,6 +9,24 @@ export default function LandingThree() {
 		if (!container) return;
 
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const playedKey = 'landing:hyperspacePlayed';
+		let shouldPlayEntry = true;
+		// Development: always play animation
+		// try {
+		// 	shouldPlayEntry = sessionStorage.getItem(playedKey) !== '1';
+		// } catch {
+		// 	// Ignore storage errors (privacy mode, etc.) and just play entry.
+		// 	shouldPlayEntry = true;
+		// }
+		const markPlayed = () => {
+			// Development: don't mark as played
+			// try {
+			// 	sessionStorage.setItem(playedKey, '1');
+			// } catch {
+			// 	// Ignore
+			// }
+		};
+
 		let landingIsReady = false;
 		let didMarkReady = false;
 		const markReady = () => {
@@ -144,13 +162,15 @@ export default function LandingThree() {
 				startPositions[i3 + 2] = (Math.random() - 0.5) * jitter;
 
 				// Target spread through space.
+				// Keep Z in front of the camera (negative) so the effect reads as "flying into" a starfield.
 				targetPositions[i3 + 0] = (Math.random() - 0.5) * spread;
 				targetPositions[i3 + 1] = (Math.random() - 0.5) * spread;
-				targetPositions[i3 + 2] = (Math.random() - 0.5) * spread;
+				targetPositions[i3 + 2] = -(Math.random() * spread);
 
-				positions[i3 + 0] = startPositions[i3 + 0];
-				positions[i3 + 1] = startPositions[i3 + 1];
-				positions[i3 + 2] = startPositions[i3 + 2];
+				// Points render in their final positions; streaks handle the entry motion.
+				positions[i3 + 0] = targetPositions[i3 + 0];
+				positions[i3 + 1] = targetPositions[i3 + 1];
+				positions[i3 + 2] = targetPositions[i3 + 2];
 			}
 
 			const geometry = new THREE.BufferGeometry();
@@ -159,6 +179,49 @@ export default function LandingThree() {
 		};
 
 		let lastTimeMs = 0;
+		const entryDelayMs = 3000;
+		const entryDurationMs = 2800;
+		let entryStartMs: number | null = null;
+
+		const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
+		const easeOutExpo = (x: number) => (x >= 1 ? 1 : 1 - Math.pow(2, -10 * x));
+		const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+		const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+		const remap01 = (x: number, a: number, b: number) => clamp01((x - a) / (b - a));
+
+		type StreakField = {
+			geometry: THREE.BufferGeometry;
+			positions: Float32Array;
+		};
+		const makeStreaks = (stars: StarField): StreakField => {
+			const count = stars.targetPositions.length / 3;
+			const positions = new Float32Array(count * 2 * 3);
+			const geometry = new THREE.BufferGeometry();
+			geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+			return { geometry, positions };
+		};
+
+		const updateBigBang = (stars: StarField, progress01: number) => {
+			// Big bang: stars expand from center sphere to final positions
+			const eased = easeOutExpo(progress01);
+			const count = stars.targetPositions.length / 3;
+
+			for (let i = 0; i < count; i++) {
+				const i3 = i * 3;
+				const sx = stars.startPositions[i3 + 0];
+				const sy = stars.startPositions[i3 + 1];
+				const sz = stars.startPositions[i3 + 2];
+				const tx = stars.targetPositions[i3 + 0];
+				const ty = stars.targetPositions[i3 + 1];
+				const tz = stars.targetPositions[i3 + 2];
+
+				stars.positions[i3 + 0] = lerp(sx, tx, eased);
+				stars.positions[i3 + 1] = lerp(sy, ty, eased);
+				stars.positions[i3 + 2] = lerp(sz, tz, eased);
+			}
+
+			(stars.geometry.getAttribute('position') as THREE.BufferAttribute).needsUpdate = true;
+		};
 
 		let activeConfigKey: Breakpoint | null = null;
 		let activeConfig: SceneConfig | null = null;
@@ -169,25 +232,39 @@ export default function LandingThree() {
 		activeConfigKey = activeConfig.breakpoint;
 
 		let starsField = makeStars(activeConfig.starsCount, activeConfig.spread);
+		let streakField = makeStreaks(starsField);
+		const starsBaseOpacity = 0.40;
 		const starsMaterial = new THREE.PointsMaterial({
 			color: new THREE.Color(getUiColor()),
 			size: activeConfig.starsSize,
 			sizeAttenuation: true,
 			transparent: true,
-			opacity: 0.40,
+			opacity: starsBaseOpacity,
 			depthWrite: false,
 			blending: THREE.AdditiveBlending,
 		});
 		const stars = new THREE.Points(starsField.geometry, starsMaterial);
 		scene.add(stars);
 
+		// Hide streaks - not using them for big bang effect
+		const streakBaseOpacity = 0.75;
+		const streakMaterial = new THREE.LineBasicMaterial({
+			color: new THREE.Color(getUiColor()),
+			transparent: true,
+			opacity: 0,
+			blending: THREE.AdditiveBlending,
+		});
+		const streaks = new THREE.LineSegments(streakField.geometry, streakMaterial);
+		scene.add(streaks);
+
 		let dustField = makeStars(activeConfig.dustCount, Math.max(18, activeConfig.spread * 0.65));
+		const dustBaseOpacity = 0.12;
 		const dustMaterial = new THREE.PointsMaterial({
 			color: new THREE.Color(getUiColor()),
 			size: activeConfig.dustSize,
 			sizeAttenuation: true,
 			transparent: true,
-			opacity: 0.12,
+			opacity: 0,
 			depthWrite: false,
 			blending: THREE.AdditiveBlending,
 		});
@@ -227,6 +304,11 @@ export default function LandingThree() {
 				stars.geometry = newStarsField.geometry;
 				starsField = newStarsField;
 
+				const newStreakField = makeStreaks(starsField);
+				streaks.geometry.dispose();
+				streaks.geometry = newStreakField.geometry;
+				streakField = newStreakField;
+
 				const newDustField = makeStars(nextConfig.dustCount, Math.max(18, nextConfig.spread * 0.65));
 				dust.geometry.dispose();
 				dust.geometry = newDustField.geometry;
@@ -234,8 +316,9 @@ export default function LandingThree() {
 
 				// Keep current state: if landing already revealed, jump to final.
 				if (landingIsReady) {
-					applyExplosion(starsField, 1);
-					applyExplosion(dustField, 1);
+					streakMaterial.opacity = 0;
+					starsMaterial.opacity = starsBaseOpacity;
+					dustMaterial.opacity = dustBaseOpacity;
 					if (prefersReducedMotion) renderer.render(scene, camera);
 				} else {
 					// If still in entry animation, restart it cleanly.
@@ -247,25 +330,33 @@ export default function LandingThree() {
 		resize();
 
 		let rafId = 0;
-		const entryDelayMs = 850;
-		const entryDurationMs = 1400;
-		let entryStartMs: number | null = null;
-		const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
-		const applyExplosion = (field: StarField, p: number) => {
-			const eased = easeOutCubic(p);
-			for (let i = 0; i < field.positions.length; i++) {
-				field.positions[i] = field.startPositions[i] + (field.targetPositions[i] - field.startPositions[i]) * eased;
-			}
-			(field.geometry.getAttribute('position') as THREE.BufferAttribute).needsUpdate = true;
-		};
-
 		const render = (t: number) => {
 			lastTimeMs = t;
 			const time = t * 0.001;
 			if (entryStartMs === null) entryStartMs = t;
-			const entryProgress = Math.min(1, Math.max(0, (t - entryStartMs - entryDelayMs) / entryDurationMs));
-			applyExplosion(starsField, entryProgress);
-			applyExplosion(dustField, entryProgress);
+			const cfg = activeConfig ?? getConfig(window.innerWidth, window.innerHeight);
+
+			if (shouldPlayEntry) {
+				const entryProgress = clamp01((t - entryStartMs - entryDelayMs) / entryDurationMs);
+				updateBigBang(starsField, entryProgress);
+
+				// Fade in dust during expansion
+				const dustFade = easeOutCubic(remap01(entryProgress, 0.3, 1));
+				dustMaterial.opacity = dustBaseOpacity * dustFade;
+
+				if (entryProgress >= 1) {
+					starsMaterial.opacity = starsBaseOpacity;
+					dustMaterial.opacity = dustBaseOpacity;
+					markPlayed();
+					markReady();
+					shouldPlayEntry = false;
+				}
+			} else {
+				// Skip entry: render the final starfield immediately.
+				starsMaterial.opacity = starsBaseOpacity;
+				dustMaterial.opacity = dustBaseOpacity;
+				markReady();
+			}
 
 			stars.rotation.y = time * 0.03;
 			stars.rotation.x = time * 0.01;
@@ -273,17 +364,25 @@ export default function LandingThree() {
 			dust.rotation.x = time * 0.006;
 			dust.position.y = Math.sin(time * 0.5) * 0.08;
 			renderer.render(scene, camera);
-			if (entryProgress >= 1) markReady();
 			rafId = window.requestAnimationFrame(render);
 		};
 
 		if (!prefersReducedMotion) {
+			if (!shouldPlayEntry) {
+				// Ensure we don't flash hidden content when returning to the landing page.
+				streakMaterial.opacity = 0;
+				starsMaterial.opacity = starsBaseOpacity;
+				dustMaterial.opacity = dustBaseOpacity;
+				markReady();
+			}
 			rafId = window.requestAnimationFrame(render);
 		} else {
 			// Jump straight to final state for reduced motion.
-			applyExplosion(starsField, 1);
-			applyExplosion(dustField, 1);
+			streakMaterial.opacity = 0;
+			starsMaterial.opacity = starsBaseOpacity;
+			dustMaterial.opacity = dustBaseOpacity;
 			renderer.render(scene, camera);
+			markPlayed();
 			markReady();
 		}
 
@@ -297,6 +396,7 @@ export default function LandingThree() {
 			const uiColor = getUiColor();
 			starsMaterial.color.set(uiColor);
 			dustMaterial.color.set(uiColor);
+			streakMaterial.color.set(uiColor);
 
 			// Update fog to keep the scene feeling integrated with the page.
 			if (activeConfig) {
@@ -307,6 +407,7 @@ export default function LandingThree() {
 
 			starsMaterial.needsUpdate = true;
 			dustMaterial.needsUpdate = true;
+			streakMaterial.needsUpdate = true;
 			if (prefersReducedMotion) renderer.render(scene, camera);
 		};
 
@@ -326,6 +427,8 @@ export default function LandingThree() {
 			starsMaterial.dispose();
 			dustField.geometry.dispose();
 			dustMaterial.dispose();
+			streakField.geometry.dispose();
+			streakMaterial.dispose();
 			renderer.dispose();
 			if (renderer.domElement.parentElement === container) {
 				container.removeChild(renderer.domElement);
@@ -337,7 +440,7 @@ export default function LandingThree() {
 		<div
 			ref={mountRef}
 			aria-hidden="true"
-			className="pointer-events-none absolute inset-0 -z-10"
+			className="pointer-events-none h-full w-full"
 		/>
 	);
 }
