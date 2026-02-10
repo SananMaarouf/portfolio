@@ -12,4 +12,9 @@ const { lang = 'en' } = Astro.props;
 const landingData = await getLanding(lang);
 ---
 
-<Introduction client:load landingData={landingData} />
+
+<section class="relative isolate">
+	<div class="landing-gated">
+		<Introduction client:load landingData={landingData} />
+	</div>
+</section>
