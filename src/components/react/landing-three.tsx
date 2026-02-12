@@ -352,9 +352,9 @@ export default function LandingThree() {
 					// Build up shake intensity as we approach the explosion
 					const delayProgress = timeSinceStart / entryDelayMs;
 					// Smooth pulsing using sine wave (0-1 range)
-					const shake = Math.sin(timeSinceStart * 0.0009) * 3 + 0.5;
+					const shake = Math.sin(timeSinceStart * 0.0009) * 5 + 0.5;
 					// Cubic easing for intensity build-up, multiplied by smooth pulse
-					shakeIntensity = 1 * delayProgress * delayProgress * delayProgress * shake;
+					shakeIntensity = 0.7 * delayProgress * delayProgress * delayProgress * shake;
 				}
 				
 				updateBigBang(starsField, entryProgress, shakeIntensity);
