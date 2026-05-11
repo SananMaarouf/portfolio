@@ -1,8 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 export default function LandingThree() {
 	const mountRef = useRef<HTMLDivElement | null>(null);
+	const [progress, setProgress] = useState(0);
+	const [showProgress, setShowProgress] = useState(true);
 
 	useEffect(() => {
 		const container = mountRef.current;
@@ -11,19 +13,14 @@ export default function LandingThree() {
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		const playedKey = 'landing:hyperspacePlayed';
 		let shouldPlayEntry = true;
-		 try {
+		  try {
 		 	shouldPlayEntry = sessionStorage.getItem(playedKey) !== '1';
-		 } catch {
-		 	// Ignore storage errors (privacy mode, etc.) and just play entry.
-		 	shouldPlayEntry = true;
-		 }
+		  } catch {
+		  	// Ignore storage errors (privacy mode, etc.) and just play entry.
+		  	shouldPlayEntry = true;
+		  }
 		const markPlayed = () => {
-			 try {
-			 	sessionStorage.setItem(playedKey, '1');
-			 } catch {
-				// Ignore storage errors (privacy mode, etc.)
-
-			}
+			sessionStorage.setItem(playedKey, '1');
 		};
 
 		let landingIsReady = false;
@@ -352,9 +349,18 @@ export default function LandingThree() {
 					// Build up shake intensity as we approach the explosion
 					const delayProgress = timeSinceStart / entryDelayMs;
 					// Smooth pulsing using sine wave (0-1 range)
-					const shake = Math.sin(timeSinceStart * 0.0009) * 3 + 0.5;
+					const shake = Math.sin(timeSinceStart * 0.0009) * 5 + 0.5;
 					// Cubic easing for intensity build-up, multiplied by smooth pulse
-					shakeIntensity = 1 * delayProgress * delayProgress * delayProgress * shake;
+					shakeIntensity = 0.7 * delayProgress * delayProgress * delayProgress * shake;
+					
+					// Update progress indicator (0-100%), reaching 100% 500ms before big bang
+					const progressDuration = entryDelayMs - 500;
+					const progressValue = Math.min(100, Math.floor((timeSinceStart / progressDuration) * 100));
+					setProgress(progressValue);
+				} else if (timeSinceStart >= entryDelayMs && timeSinceStart < entryDelayMs + 500) {
+					// Fade out phase: progress at 100%, but we'll hide it via opacity
+					setProgress(100);
+					setShowProgress(false);
 				}
 				
 				updateBigBang(starsField, entryProgress, shakeIntensity);
@@ -397,6 +403,7 @@ export default function LandingThree() {
 				starsMaterial.opacity = starsBaseOpacity;
 				dustMaterial.opacity = dustBaseOpacity;
 				markReady();
+				setShowProgress(false);
 			}
 			rafId = window.requestAnimationFrame(render);
 		} else {
@@ -407,6 +414,7 @@ export default function LandingThree() {
 			renderer.render(scene, camera);
 			markPlayed();
 			markReady();
+			setShowProgress(false);
 		}
 
 		const onWindowResize = () => resize();
@@ -467,10 +475,23 @@ export default function LandingThree() {
 	}, []);
 
 	return (
-		<div
-			ref={mountRef}
-			aria-hidden="true"
-			className="pointer-events-none h-full w-full"
-		/>
+		<>
+			{/* Progress Indicator */}
+			<div 
+				className="pointer-events-none fixed inset-0 z-50 mt-44 flex items-center justify-center transition-opacity duration-500"
+				style={{ opacity: showProgress ? 1 : 0 }}
+			>
+				<div className="text-xl font-bold text-foreground">
+					{progress}%
+				</div>
+			</div>
+			
+			{/* Three.js Canvas */}
+			<div
+				ref={mountRef}
+				aria-hidden="true"
+				className="pointer-events-none h-full w-full"
+			/>
+		</>
 	);
 }

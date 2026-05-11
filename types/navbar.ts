@@ -26,20 +26,16 @@ interface NavbarProps {
 type Locale = "en" | "nb";
 
 interface DesktopNavProps {
-  logo: NonNullable<NavbarProps["logo"]>;
   menu: NonNullable<NavbarProps["menu"]>;
   locale: Locale;
-  homeUrl: string;
   localizeUrl: (url: string) => string;
   resumeUrl: string;
   resumeTitle: string;
 }
 
 interface MobileNavProps {
-  logo: NonNullable<NavbarProps["logo"]>;
   menu: NonNullable<NavbarProps["menu"]>;
   locale: Locale;
-  homeUrl: string;
   localizeUrl: (url: string) => string;
   resumeUrl: string;
   resumeTitle: string;
