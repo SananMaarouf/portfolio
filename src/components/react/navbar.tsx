@@ -1,5 +1,6 @@
 import type { NavbarProps } from "../../../types/navbar";
 import { DesktopNav } from "./navbar-desktop";
+import { CircularLogo } from "./circular-logo";
 import { MobileNav } from "./navbar-mobile";
 
 // Main Navbar component with responsive design
@@ -20,15 +21,19 @@ const Navbar = ({logo = {title: "Acme Corp", image: "/logo.png", alt: "Logo"},
   const resumeTitle = locale === "nb" ? "CV" : "Resume";
   
   return (
-    // Sticky navbar with backdrop blur effect
-    <section className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 pt-4 pb-4">
-      <div className="container">
+    // Fixed navbar with backdrop blur effect
+    <section className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+      <div className="container flex flex-row w-full">
+        <CircularLogo 
+          title={logo.title}
+          image={logo.image}
+          alt={logo.alt}
+          homeUrl={homeUrl}
+        />
         {/* Desktop Menu - Hidden on mobile, visible on large screens */}
         <DesktopNav
-          logo={logo}
           menu={menu}
           locale={locale}
-          homeUrl={homeUrl}
           localizeUrl={localizeUrl}
           resumeUrl={resumeUrl}
           resumeTitle={resumeTitle}
@@ -36,10 +41,8 @@ const Navbar = ({logo = {title: "Acme Corp", image: "/logo.png", alt: "Logo"},
 
         {/* Mobile Menu - Visible only on small screens */}
         <MobileNav
-          logo={logo}
           menu={menu}
           locale={locale}
-          homeUrl={homeUrl}
           localizeUrl={localizeUrl}
           resumeUrl={resumeUrl}
           resumeTitle={resumeTitle}

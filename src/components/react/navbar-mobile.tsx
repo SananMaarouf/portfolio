@@ -5,21 +5,10 @@ import type { MobileNavProps } from "../../../types/navbar";
 import { LanguageSwitcherMobile } from "./language-switcher";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
 
-export const MobileNav = ({ logo, menu, locale, homeUrl, localizeUrl, resumeUrl, resumeTitle }: MobileNavProps) => {
+export const MobileNav = ({ menu, locale, localizeUrl, resumeUrl, resumeTitle }: MobileNavProps) => {
   return (
-    <nav className="block lg:hidden">
-      <header className="flex items-center justify-between">
-        {/* Mobile logo */}
-        <a href={homeUrl} className="flex items-center gap-2 group">
-          {logo.image && (
-            <img 
-              src={logo.image} 
-              alt={logo.alt || logo.title}
-              className="h-8 w-auto rounded-full transition-transform duration-300"
-            />
-          )}
-          <span className=" text-primary text-2xl group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-300">{logo.title}</span>
-        </a>
+    <nav className="flex-row content-center w-full lg:hidden">
+      <header className="flex justify-end">        
         {/* Mobile menu drawer/sheet */}
         <Sheet>
           {/* Hamburger menu button */}
