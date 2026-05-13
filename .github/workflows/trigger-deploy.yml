@@ -3,6 +3,16 @@ name: Trigger Dokploy Deployment
 on:
   workflow_dispatch:
   workflow_call:
+    secrets:
+      CF_ACCESS_CLIENT_ID:
+        required: true
+      CF_ACCESS_CLIENT_SECRET:
+        required: true
+      DOKPLOY_DEPLOY_HOOK_URL:
+        required: true
+
+permissions:
+  contents: read
 
 jobs:
   trigger-deployment:
@@ -27,19 +37,20 @@ jobs:
           # Make the request and capture both response and HTTP code
           # Added -A (User-Agent) to avoid WAF blocking 'curl'
           # Added -L (Location) to follow redirects
-          HTTP_CODE=$(curl -X POST "$DOKPLOY_DEPLOY_HOOK_URL" \
+          # Note: -v removed intentionally — it prints request headers including
+          # CF-Access-Client-Id/Secret. Actions secret masking is best-effort.
+          HTTP_CODE=$(curl -sS -X POST "$DOKPLOY_DEPLOY_HOOK_URL" \
             -H "Content-Type: application/json" \
             -H "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID" \
             -H "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET" \
             -A "SananMaarouf-GitHub-Actions-Deploy-Script" \
             -d '{}' \
+            -D /tmp/response_headers.txt \
             -w "%{http_code}" \
             -o /tmp/response.txt \
-            -v \
             -L \
             --max-time 30 \
-            --connect-timeout 10 \
-            2>&1 | tee /tmp/curl_debug.txt | tail -1)
+            --connect-timeout 10)
           
           RESPONSE_BODY=$(cat /tmp/response.txt 2>/dev/null || echo "No response body")
           
@@ -92,8 +103,8 @@ jobs:
                echo "   3. The policy Action is not set to 'Service Auth'."
             fi
             echo ""
-            echo "🔍 Cloudflare-related debug info:"
-            grep -i "cloudflare" /tmp/curl_debug.txt || echo "  (none found)"
+            echo "🔍 Cloudflare-related response headers:"
+            grep -i "cf-\|cloudflare\|server:" /tmp/response_headers.txt || echo "  (none found)"
             exit 1
           elif [ "$HTTP_CODE" -eq 0 ] || [ "$HTTP_CODE" -eq 000 ]; then
             echo ""
@@ -104,8 +115,8 @@ jobs:
             echo "  - DNS resolution failure"
             echo "  - Cloudflare blocking at network level"
             echo ""
-            echo "🔍 Full debug info:"
-            cat /tmp/curl_debug.txt
+            echo "🔍 Response headers (if any):"
+            cat /tmp/response_headers.txt 2>/dev/null || echo "  (no headers captured)"
             exit 1
           elif [ "$HTTP_CODE" -ge 500 ]; then
             echo ""
@@ -117,7 +128,7 @@ jobs:
             echo ""
             echo "⚠️  Warning: Unexpected response code: $HTTP_CODE"
             echo "=================================================="
-            echo "🔍 Full debug output:"
-            cat /tmp/curl_debug.txt
+            echo "🔍 Response headers:"
+            cat /tmp/response_headers.txt 2>/dev/null || echo "  (no headers captured)"
             exit 1
           fi
