@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Use BuildKit cache mount to speed repeated installs
-RUN --mount=type=cache,target=/root/.npm npm ci --force
+RUN --mount=type=cache,target=/root/.npm npm ci --no-audit --no-fund
 
 ############################################
 # builder stage: copy source & build static site
@@ -39,19 +39,24 @@ ENV PUBLIC_SANITY_PROJECT_ID=$PUBLIC_SANITY_PROJECT_ID \
 
 # Bring in node_modules from deps stage
 COPY --from=deps /app/node_modules ./node_modules
-COPY package.json package-lock.json* ./
 
-# Copy remaining source (everything else)
+# Copy source (package.json/lock are included here, .dockerignore excludes node_modules)
 COPY . .
 
 # Build static site (cache busts when CONTENT_UPDATE_TOKEN changes)
-RUN echo "Content token: $CONTENT_UPDATE_TOKEN" > .content-buster && npm run build
+RUN --mount=type=cache,target=/app/.astro \
+	--mount=type=cache,target=/app/node_modules/.vite \
+	echo "Content token: $CONTENT_UPDATE_TOKEN" > .content-buster && npm run build
 
 ############################################
-# runtime stage: minimal nginx serving /dist
+# runtime stage: minimal nginx (non-root) serving /dist
 ############################################
-FROM nginx:alpine AS runtime
+FROM nginxinc/nginx-unprivileged:alpine AS runtime
 WORKDIR /usr/share/nginx/html
+
+# Re-declare build args so LABEL substitutions work in this stage
+ARG BUILD_COMMIT="unknown"
+ARG BUILD_TIMESTAMP="unknown"
 
 # Labels for traceability
 LABEL org.opencontainers.image.source="https://github.com/SananMaarouf/portfolio" \
@@ -62,5 +67,8 @@ LABEL org.opencontainers.image.source="https://github.com/SananMaarouf/portfolio
 COPY --from=builder /app/dist .
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+	CMD wget -qO- http://127.0.0.1:8080/ >/dev/null 2>&1 || exit 1
+
+EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
