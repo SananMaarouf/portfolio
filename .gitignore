@@ -3,7 +3,8 @@ dist/
 
 # generated types
 .astro/
-
+.sanity/
+.claude/
 # dependencies
 node_modules/
 

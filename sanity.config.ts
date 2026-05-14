@@ -4,10 +4,9 @@ import { schema } from "./src/sanity/schemaTypes";
 import {internationalizedArray} from 'sanity-plugin-internationalized-array'
 
 export default defineConfig({
-  projectId: "dilnanz0",
-  dataset: "production",
-  studioHost: "sanan",
-  name: "Portfolio",
+  projectId: process.env.SANITY_STUDIO_PROJECT_ID!,
+  dataset: process.env.SANITY_STUDIO_DATASET!,
+  name: process.env.SANITY_STUDIO_PROJECT_NAME!,
   plugins: [
     structureTool(),
     internationalizedArray({
