@@ -2,7 +2,7 @@
 ############################################
 # deps stage: install node dependencies once
 ############################################
-FROM node:20-alpine AS deps
+FROM node:24-alpine AS deps
 WORKDIR /app
 
 # Only copy manifest files to maximize layer cache reuse
@@ -14,7 +14,7 @@ RUN --mount=type=cache,target=/root/.npm npm ci --no-audit --no-fund
 ############################################
 # builder stage: copy source & build static site
 ############################################
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 
 # Build arguments for environment variables (baked into static output)

@@ -5,11 +5,8 @@ import react from '@astrojs/react';
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
-// Load .env variables manually
-const env = loadEnv('', process.cwd(), '');
-
-const projectId = env.PUBLIC_SANITY_PROJECT_ID;
-const dataset = env.PUBLIC_SANITY_DATASET;
+const { PUBLIC_SANITY_PROJECT_ID: projectId, PUBLIC_SANITY_DATASET: dataset } =
+  loadEnv(process.env.NODE_ENV ?? '', process.cwd(), 'PUBLIC_');
 
 // https://astro.build/config
 export default defineConfig({
