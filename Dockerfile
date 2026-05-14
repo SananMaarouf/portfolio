@@ -2,7 +2,7 @@
 ############################################
 # deps stage: install node dependencies once
 ############################################
-FROM node:20-alpine AS deps
+FROM node:24-alpine AS deps
 WORKDIR /app
 
 # Only copy manifest files to maximize layer cache reuse
@@ -14,26 +14,24 @@ RUN --mount=type=cache,target=/root/.npm npm ci --no-audit --no-fund
 ############################################
 # builder stage: copy source & build static site
 ############################################
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 
 # Build arguments for environment variables (baked into static output)
-ARG PUBLIC_SANITY_PROJECT_ID
-ARG PUBLIC_SANITY_DATASET
+ARG SANITY_PROJECT_ID
+ARG SANITY_DATASET
 ARG PUBLIC_PAGE_TITLE
 ARG PUBLIC_NAVBAR_TITLE
 ARG PUBLIC_COPYRIGHT_HOLDER
-ARG SANITY_STUDIO_STUDIO_HOST
 ARG BUILD_COMMIT="unknown"
 ARG BUILD_TIMESTAMP="unknown"
 ARG CONTENT_UPDATE_TOKEN="" # used to bust build cache on content-only updates
 
-ENV PUBLIC_SANITY_PROJECT_ID=$PUBLIC_SANITY_PROJECT_ID \
-	PUBLIC_SANITY_DATASET=$PUBLIC_SANITY_DATASET \
+ENV SANITY_PROJECT_ID=$SANITY_PROJECT_ID \
+	SANITY_DATASET=$SANITY_DATASET \
 	PUBLIC_PAGE_TITLE=$PUBLIC_PAGE_TITLE \
 	PUBLIC_NAVBAR_TITLE=$PUBLIC_NAVBAR_TITLE \
 	PUBLIC_COPYRIGHT_HOLDER=$PUBLIC_COPYRIGHT_HOLDER \
-	SANITY_STUDIO_STUDIO_HOST=$SANITY_STUDIO_STUDIO_HOST \
 	BUILD_COMMIT=$BUILD_COMMIT \
 	BUILD_TIMESTAMP=$BUILD_TIMESTAMP
 

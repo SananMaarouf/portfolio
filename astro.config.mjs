@@ -5,13 +5,7 @@ import react from '@astrojs/react';
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
-// Load .env variables manually
-const env = loadEnv('', process.cwd(), '');
-
-const projectId = env.PUBLIC_SANITY_PROJECT_ID;
-const dataset = env.PUBLIC_SANITY_DATASET;
-
-// https://astro.build/config
+const { SANITY_PROJECT_ID, SANITY_DATASET } = loadEnv(process.env.NODE_ENV ?? '', process.cwd(), "");
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
@@ -28,8 +22,8 @@ export default defineConfig({
   },
   integrations: [
     sanity({
-      projectId,
-      dataset,
+      projectId: SANITY_PROJECT_ID,
+      dataset: SANITY_DATASET,
       useCdn: false,
       apiVersion: "2025-09-21"
     }),

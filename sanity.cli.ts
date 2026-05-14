@@ -1,7 +1,6 @@
-import { projectId, dataset } from "./environment";
 export default {
   api: {
-    projectId,
-    dataset,
+    projectId: process.env.SANITY_STUDIO_PROJECT_ID!,
+    dataset: process.env.SANITY_STUDIO_DATASET!,
   },
 };
