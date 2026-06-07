@@ -43,14 +43,7 @@ export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarous
 
 	return (
 		<section id="projects" className="my-10 text-foreground md:mx-auto  relative w-full xl:w-10/12 bg-transparent scroll-mt-24">
-			<motion.section
-				ref={ref}
-				initial={{ opacity: 0, y: 200 }}
-				whileInView={{ opacity: 1, y: 0 }}
-				viewport={{ once: true }}
-				transition={{ duration: 1 }}
-				className="w-full"
-			>
+			<section className="w-full">
 				{/* indicate to user */}
 				<h1 className="text-3xl mb-2">{t.title}</h1>
 				<motion.p
@@ -128,7 +121,7 @@ export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarous
 						</motion.div>
 					)}
 					</div>
-			</motion.section>
+			</section>
 		</section>
 	);
 }
