@@ -8,25 +8,13 @@ export const DesktopNav = ({ menu, locale, localizeUrl, resumeUrl, resumeTitle }
     <nav className="hidden lg:flex w-full justify-between">
       <section className="flex gap-2 items-center ml-auto">
         {/* Desktop navigation menu items */}
-        <ul className="flex items-center gap-1">
-          {menu.map((item) => {
-            const href = localizeUrl(item.url);
-            return (
-              <li key={item.title}>
-                <a
-                  href={href}
-                  className="
-                  hover:bg-primary hover:text-primary-foreground 
-                  inline-flex items-center justify-center 
-                  rounded-md px-4 text-sm font-medium 
-                  transition-colors duration-300"
-                >
-                  {item.title}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
+        <div className="flex items-center gap-1">
+          {menu.map((item) => (
+            <Button key={item.title} variant="ghost" size="sm" asChild>
+              <a href={localizeUrl(item.url)}>{item.title}</a>
+            </Button>
+          ))}
+        </div>
         <LanguageSwitcher currentLocale={locale} />
         <ThemeSwitcher />
         <Button asChild size="sm">

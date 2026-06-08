@@ -58,6 +58,7 @@ export const CircularLogo = ({ title, image, alt, homeUrl }: CircularLogoProps) 
           <img
             src={image}
             alt={alt || title}
+            fetchPriority="high"
             className="h-16 w-16 rounded-full relative z-10 group-hover:scale-110 transition-transform duration-300"
           />
         )}

@@ -1,4 +1,3 @@
-// @ts-check
 import { loadEnv } from 'vite';
 import sanity from '@sanity/astro';
 import react from '@astrojs/react';

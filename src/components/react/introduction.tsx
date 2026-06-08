@@ -38,10 +38,10 @@ export default function Introduction({ landingData }: IntroductionProps) {
           ))}
         </span>
       </h1>
-      <p className="mt-6 text-2xl md:text-4xl text-muted-foreground">
+      <p className="mt-6 text-2xl md:text-4xl">
         {job}
       </p>
-      <p className="mt-2 text-xl md:text-2xl text-muted-foreground">
+      <p className="mt-2 text-xl md:text-2xl">
         {location}
       </p>
     </section>
