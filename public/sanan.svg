@@ -5,13 +5,17 @@
   </clipPath>
   <style>
     @keyframes meridianSpin {
-      0%   { transform: rotateY(0deg); }
-      100% { transform: rotateY(360deg); }
+      0%   { transform: scaleX(1); }
+      25%  { transform: scaleX(0); }
+      50%  { transform: scaleX(-1); }
+      75%  { transform: scaleX(0); }
+      100% { transform: scaleX(1); }
     }
     .globe-m {
       transform-box: fill-box;
       transform-origin: center;
       animation: meridianSpin 6s linear infinite;
+      will-change: transform;
     }
     .globe-m1 { animation-delay: -2s; }
     .globe-m2 { animation-delay: -1s; }
