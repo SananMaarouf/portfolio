@@ -1,5 +1,6 @@
 ---
 import { getLanding } from '@/utils/sanity';
+import sananSvg from '../assets/sanan.svg?url';
 
 interface Props {
 	lang?: string;
@@ -29,7 +30,7 @@ const { name, job, location } = landingData ?? {};
 				</h1>
 			</div>
 			<img
-				src="/sanan.svg"
+				src={sananSvg}
 				alt="Sanan"
 				class="order-2 relative md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2 h-72 md:h-[100%] w-auto object-contain mx-auto md:mx-0"
 			/>
