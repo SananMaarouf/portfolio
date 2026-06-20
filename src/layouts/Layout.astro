@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import { Navbar } from '@/components/react/navbar';
-import LandingThree from '@/components/react/landing-three';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
 	lang?: string;
@@ -26,9 +26,6 @@ const menuTranslations = {
 };
 
 const menu = menuTranslations[locale];
-
-const pathname = Astro.url?.pathname ?? '';
-const isLanding = pathname === '/' || pathname === '/nb' || pathname === '/nb/';
 ---
 <!doctype html>
 
@@ -37,32 +34,23 @@ const isLanding = pathname === '/' || pathname === '/nb' || pathname === '/nb/';
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<link rel="preload" as="image" href="/sanan1.webp" fetchpriority="high" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{pageTitle}</title>
+		<ClientRouter />
 		<script is:inline>
-			// Initialize theme before page loads to prevent flash
-			const theme = localStorage.getItem('theme') || 
-				(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-			document.documentElement.classList.toggle('dark', theme === 'dark');
+			function applyTheme() {
+				const theme = localStorage.getItem('theme') ||
+					(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+				document.documentElement.classList.toggle('dark', theme === 'dark');
+			}
+			applyTheme();
+			document.addEventListener('astro:after-swap', applyTheme);
 		</script>
-		{isLanding && (
-			<script is:inline>
-				// Gate landing content until Three.js has rendered at least once.
-				document.documentElement.dataset.landingGate = 'true';
-				delete document.documentElement.dataset.landingReady;
-			</script>
-		)}
 	</head>
 	<body class="bg-background text-foreground transition-colors duration-300 ease-linear">
-		{isLanding && (
-			<div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-				<LandingThree client:load />
-			</div>
-		)}
-		<div class="landing-gated landing-gated--navbar">
-			<Navbar client:load logo={{ title: navbarTitle, image: "/sanan1.webp" }} locale={locale} menu={menu} />
-		</div>
-		<div class={`max-w-6xl pt-20 mx-auto px-4 sm:px-6 md:px-8 lg:px-10 ${isLanding ? 'landing-gated' : ''}`}>
+		<Navbar client:load transition:persist logo={{ title: navbarTitle, image: "/sanan1.webp" }} locale={locale} menu={menu} />
+		<div class="max-w-6xl pt-20 mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
 			<slot />
 		</div>
 	</body>

@@ -18,7 +18,7 @@ export default function BlogPostCarousel({ posts, t, locale }: BlogPostCarouselP
 	// Early return if no posts
 	if (!posts || posts.length === 0) {
 		return (
-			<section className="my-10 md:mx-auto  relative w-full xl:w-10/12">
+			<section className="my-10 md:mx-auto  relative w-full xl:w-11/12">
 				<h1 className="text-3xl mb-2">{t.title}</h1>
 				<p className="text-lg">{t.no_posts}</p>
 			</section>
@@ -47,18 +47,11 @@ export default function BlogPostCarousel({ posts, t, locale }: BlogPostCarouselP
 	const allPostsUrl = locale === 'en' ? '/posts/' : `/${locale}/posts/`;
 
 	return (
-		<section id="posts" className="my-10 text-foreground md:mx-auto  relative w-full xl:w-10/12 bg-transparent scroll-mt-24">
-			<motion.section
-				ref={ref}
-				initial={{ opacity: 0, y: 200 }}
-				whileInView={{ opacity: 1, y: 0 }}
-				viewport={{ once: true }}
-				transition={{ duration: 1 }}
-				className="w-full"
-			>
+		<section id="posts" className="my-10 text-foreground md:mx-auto  relative w-full xl:w-11/12 bg-transparent scroll-mt-24">
+			<section className="w-full">
 				{/* indicate to user */}
 				<h1 className="text-3xl mb-2">{t.title}</h1>
-				{posts.length > 1 && (
+				{posts.length > 4 && (
 					<>
 						<motion.p
 							animate={{ scale: [1, 1.1, 1] }}
@@ -121,7 +114,7 @@ export default function BlogPostCarousel({ posts, t, locale }: BlogPostCarouselP
 						</motion.div>
 					)}
 				</div>
-			</motion.section>
+			</section>
 		</section>
 	);
 }
