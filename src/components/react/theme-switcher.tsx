@@ -1,6 +1,6 @@
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   Accordion,
   AccordionContent,
@@ -8,60 +8,45 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-export function ThemeSwitcher() {
+function useTheme() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
-    // Check for saved theme preference or default to dark
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
-    
     setTheme(initialTheme);
     document.documentElement.classList.toggle("dark", initialTheme === "dark");
   }, []);
 
-  const toggleTheme = () => {
+  const toggle = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 
+  return { theme, toggle };
+}
+
+export function ThemeSwitcher() {
+  const { theme, toggle } = useTheme();
+
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={toggleTheme}
-      aria-label="Toggle theme"
-    >
-      {theme === "dark" ? (
-        <Sun className="h-5 w-5" />
-      ) : (
-        <Moon className="h-5 w-5" />
-      )}
-    </Button>
+    <div className="flex items-center gap-1.5">
+      <Sun className="h-4 w-4 text-muted-foreground" />
+      <Switch
+        checked={theme === "dark"}
+        onCheckedChange={toggle}
+        aria-label="Toggle dark mode"
+      />
+      <Moon className="h-4 w-4 text-muted-foreground" />
+    </div>
   );
 }
 
 export function ThemeSwitcherMobile({ locale = "en" }: { locale?: string }) {
-  const [theme, setTheme] = useState<"light" | "dark">("dark");
-
-  useEffect(() => {
-    // Check for saved theme preference or default to dark
-    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
-    
-    setTheme(initialTheme);
-    document.documentElement.classList.toggle("dark", initialTheme === "dark");
-  }, []);
-
-  const setThemeMode = (newTheme: "light" | "dark") => {
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
-  };
+  const { theme, toggle } = useTheme();
 
   return (
     <Accordion type="single" collapsible className="w-full">
@@ -69,23 +54,21 @@ export function ThemeSwitcherMobile({ locale = "en" }: { locale?: string }) {
         <AccordionTrigger className="text-md py-0 font-semibold hover:no-underline">
           {locale === "nb" ? "Tema" : "Theme"}
         </AccordionTrigger>
-        <AccordionContent className="mt-2 flex flex-col gap-2">
-          <Button
-            variant={theme === "light" ? "default" : "ghost"}
-            onClick={() => setThemeMode("light")}
-            className="w-full justify-start gap-2"
-          >
-            <Sun className="h-5 w-5" />
-            <span>{locale === "nb" ? "Lyst tema" : "Light mode"}</span>
-          </Button>
-          <Button
-            variant={theme === "dark" ? "default" : "ghost"}
-            onClick={() => setThemeMode("dark")}
-            className="w-full justify-start gap-2"
-          >
-            <Moon className="h-5 w-5" />
-            <span>{locale === "nb" ? "Mørk tema" : "Dark mode"}</span>
-          </Button>
+        <AccordionContent className="mt-2">
+          <div className="flex items-center gap-2">
+            <Sun className="h-4 w-4 text-muted-foreground" />
+            <Switch
+              checked={theme === "dark"}
+              onCheckedChange={toggle}
+              aria-label="Toggle dark mode"
+            />
+            <Moon className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">
+              {theme === "dark"
+                ? locale === "nb" ? "Mørk tema" : "Dark mode"
+                : locale === "nb" ? "Lyst tema" : "Light mode"}
+            </span>
+          </div>
         </AccordionContent>
       </AccordionItem>
     </Accordion>
