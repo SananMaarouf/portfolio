@@ -31,6 +31,7 @@ export async function getLanding(lang: string = 'en'): Promise<Landing> {
       title,
       name,
       image,
+      "greeting": greeting[_key == $lang][0].value,
       "job": job[_key == $lang][0].value,
       "location": location[_key == $lang][0].value
     }`,

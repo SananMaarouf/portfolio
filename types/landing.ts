@@ -12,6 +12,7 @@ export type Features = {
 export type Landing = {
   title: string;
   name: string;
+  greeting: string;
   image?: {
     asset?: any;
     alt?: string;

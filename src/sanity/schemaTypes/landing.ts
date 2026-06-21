@@ -12,6 +12,12 @@ export const landingType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'greeting',
+      type: 'internationalizedArrayString',
+      description: 'Greeting (internationalized)',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: 'name',
       type: 'string',
       description: 'Person name',
