@@ -20,10 +20,11 @@ const lastName = name?.split(' ')[1] ?? '';
 			<p>Loading...</p>
 		</section>
 	) : (
-		<section class="z-10 mt-2 lg:mt-20 mb-28 py-12 lg:py-24 relative w-11/12 mx-auto
-		bg-transparent min-h-[60vh] md:h-[60vh] mix-blend-difference flex flex-col justify-between">
+		<section class="z-10 lg:mt-20 mb-28 lg:py-2 relative w-11/12 mx-auto
+		bg-transparent min-h-[60vh] md:h-[60vh] mix-blend-difference 
+		flex flex-col justify-end ">
 			<div class="text-left mix-blend-difference">
-				<h1 class="text-6xl md:text-9xl font-bold tracking-tight">
+				<h1 class="text-5xl md:text-9xl font-bold tracking-tight">
 					<span class="block break-keep">{firstName}</span>
 					<span class="block break-keep">{lastName}</span>
 				</h1>
