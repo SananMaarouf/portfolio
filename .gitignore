@@ -39,3 +39,4 @@ pnpm-debug.log*
 # wrangler
 .wrangler/
 .dev.vars
+backups/*

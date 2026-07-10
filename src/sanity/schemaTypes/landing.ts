@@ -49,7 +49,7 @@ export const landingType = defineType({
       media: 'image',
     },
     prepare({title, location, media}) {
-      const englishLocation = location?.find((item: any) => item._key === 'en')?.value || 'No location'
+      const englishLocation = location?.find((item: any) => item.language === 'en')?.value || 'No location'
       return {
         title,
         subtitle: englishLocation,

@@ -13,11 +13,11 @@ export async function getPosts(lang: string = 'en'): Promise<Post[]> {
       _createdAt,
       slug,
       // localized title
-      "title": title[_key == $lang][0].value,
+      "title": title[language == $lang][0].value,
       // first 160 chars of plain text body as excerpt
-      "excerpt": pt::text(body[_key == $lang][0].value)[0..160],
+      "excerpt": pt::text(body[language == $lang][0].value)[0..160],
       // include body blocks if needed later
-      "body": body[_key == $lang][0].value,
+      "body": body[language == $lang][0].value,
       publishedAt,
       mainImage
     }`,
@@ -31,9 +31,9 @@ export async function getLanding(lang: string = 'en'): Promise<Landing> {
       title,
       name,
       image,
-      "greeting": greeting[_key == $lang][0].value,
-      "job": job[_key == $lang][0].value,
-      "location": location[_key == $lang][0].value
+      "greeting": greeting[language == $lang][0].value,
+      "job": job[language == $lang][0].value,
+      "location": location[language == $lang][0].value
     }`,
     { lang }
   );
@@ -45,8 +45,8 @@ export async function getProjects(lang: string = 'en'): Promise<Project[]> {
       _id,
       title,
       slug,
-      "description": description[_key == $lang][0].value,
-      "shortDescription": description[_key == $lang][0].value,
+      "description": description[language == $lang][0].value,
+      "shortDescription": description[language == $lang][0].value,
       date,
       version,
       technologies,
