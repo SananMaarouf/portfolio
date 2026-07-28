@@ -29,16 +29,14 @@ interface DesktopNavProps {
   menu: NonNullable<NavbarProps["menu"]>;
   locale: Locale;
   localizeUrl: (url: string) => string;
-  resumeUrl: string;
-  resumeTitle: string;
+  linkedinUrl: string;
 }
 
 interface MobileNavProps {
   menu: NonNullable<NavbarProps["menu"]>;
   locale: Locale;
   localizeUrl: (url: string) => string;
-  resumeUrl: string;
-  resumeTitle: string;
+  linkedinUrl: string;
 }
 
 export type { MenuItem, NavbarProps, MobileNavProps, DesktopNavProps };

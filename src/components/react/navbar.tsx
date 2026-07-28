@@ -23,8 +23,7 @@ const Navbar = ({logo = {title: "Acme Corp", image: "/logo.png", alt: "Logo"},
     }
     return url;
   };
-  const resumeUrl = locale === "nb" ? "/download/cv-no" : "/download/cv-en";
-  const resumeTitle = locale === "nb" ? "CV" : "Resume";
+  const linkedinUrl = "https://www.linkedin.com/in/sanan-maarouf/";
 
   return (
     <section className={`fixed top-0 left-0 right-0 z-40 flex justify-center transition-all duration-300 ${scrolled ? "lg:pt-3 lg:px-8" : ""}`}>
@@ -41,8 +40,7 @@ const Navbar = ({logo = {title: "Acme Corp", image: "/logo.png", alt: "Logo"},
             menu={menu}
             locale={locale}
             localizeUrl={localizeUrl}
-            resumeUrl={resumeUrl}
-            resumeTitle={resumeTitle}
+            linkedinUrl={linkedinUrl}
           />
 
           {/* Mobile Menu - Visible only on small screens */}
@@ -50,8 +48,7 @@ const Navbar = ({logo = {title: "Acme Corp", image: "/logo.png", alt: "Logo"},
             menu={menu}
             locale={locale}
             localizeUrl={localizeUrl}
-            resumeUrl={resumeUrl}
-            resumeTitle={resumeTitle}
+            linkedinUrl={linkedinUrl}
           />
         </div>
       </div>

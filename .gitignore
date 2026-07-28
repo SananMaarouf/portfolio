@@ -36,7 +36,4 @@ pnpm-debug.log*
 .sanity/runtime/app.js
 .sanity/runtime/index.html
 
-# wrangler
-.wrangler/
-.dev.vars
 backups/*
