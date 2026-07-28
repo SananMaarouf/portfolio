@@ -18,10 +18,6 @@ npm run sanity:dev        # run Sanity Studio locally
 npm run sanity:deploy     # deploy Sanity Studio
 npm run sanity:dataset-export / :dataset-import
 npm run sanity:documents-query
-
-npm run worker:dev        # wrangler dev for the Cloudflare Worker
-npm run worker:deploy     # wrangler deploy
-npm run worker:tail       # tail worker logs
 ```
 
 There is no test suite or lint script configured in `package.json`.
@@ -48,11 +44,7 @@ There is no test suite or lint script configured in `package.json`.
 - Interactive pieces are React islands under `src/components/react/` (navbar, language switcher, theme switcher, carousels, settings menu).
 - `src/components/ui/` holds shadcn/ui primitives (config in `components.json`, style `new-york`, Tailwind v4 via `@tailwindcss/vite`). Path alias `@/*` → `src/*` (see `tsconfig.json`), matching shadcn aliases.
 
-### Cloudflare Worker (CV download)
-
-- `cloudflare-worker-cv.js` + `wrangler.toml` implement a separate, independently deployed Worker that serves CV downloads from an R2 bucket (`CV_BUCKET`) with rate limiting (10 req/min), routed at `sanan.no/download/*` (and `/nb/download/*`). Deployed by its own workflow (`.github/workflows/deploy-worker.yml`), triggered only when `cloudflare-worker-cv.js` or `wrangler.toml` change — unrelated to the main site build.
-
-### Deployment (main site)
+### Deployment
 
 CI/CD is intentionally split into a build stage and a separate trigger stage (see README "Known issues"/"Features" and `.github/workflows/`):
 

@@ -5,7 +5,7 @@ import type { MobileNavProps } from "../../../types/navbar";
 import { LanguageSwitcherMobile } from "./language-switcher";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
 
-export const MobileNav = ({ menu, locale, localizeUrl, resumeUrl, resumeTitle }: MobileNavProps) => {
+export const MobileNav = ({ menu, locale, localizeUrl, linkedinUrl }: MobileNavProps) => {
   return (
     <nav className="flex-row content-center w-full lg:hidden">
       <header className="flex justify-end">        
@@ -41,7 +41,7 @@ export const MobileNav = ({ menu, locale, localizeUrl, resumeUrl, resumeTitle }:
                 <LanguageSwitcherMobile currentLocale={locale} />
                 <ThemeSwitcherMobile locale={locale} />
                 <Button asChild>
-                  <a href={resumeUrl} download>{resumeTitle}</a>
+                  <a href={linkedinUrl} target="_blank" rel="noopener noreferrer">LinkedIn</a>
                 </Button>
               </section>
             </nav>

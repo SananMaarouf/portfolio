@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { SettingsMenu } from "./settings-menu";
 import type { DesktopNavProps } from "../../../types/navbar";
 
-export const DesktopNav = ({ menu, locale, localizeUrl, resumeUrl, resumeTitle }: DesktopNavProps) => {
+export const DesktopNav = ({ menu, locale, localizeUrl, linkedinUrl }: DesktopNavProps) => {
   return (
     <nav className="hidden lg:flex w-full justify-between">
       <section className="flex gap-2 items-center ml-auto">
@@ -15,7 +15,7 @@ export const DesktopNav = ({ menu, locale, localizeUrl, resumeUrl, resumeTitle }
         </div>
         <SettingsMenu currentLocale={locale} />
         <Button asChild size="sm">
-          <a href={resumeUrl} download>{resumeTitle}</a>
+          <a href={linkedinUrl} target="_blank" rel="noopener noreferrer">LinkedIn</a>
         </Button>
       </section>
     </nav>
