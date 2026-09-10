@@ -27,9 +27,10 @@ const Navbar = ({logo = {title: "Acme Corp", image: "/logo.png", alt: "Logo"},
 
   return (
     <section className={`fixed top-0 left-0 right-0 z-40 flex justify-center transition-all duration-300 ${scrolled ? "lg:pt-3 lg:px-8" : ""}`}>
-      <div className={`w-full transition-all duration-300 ${scrolled ? "bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 lg:rounded-2xl lg:shadow-lg" : "bg-transparent"}`}>
+      <div className={`chrome-bar font-ui w-full transition-all duration-300 ${scrolled ? "bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 lg:rounded-2xl lg:shadow-lg" : "bg-transparent"}`}>
         <div className="container flex flex-row w-full">
           <CircularLogo
+            data-chrome="title"
             title={logo.title}
             image={logo.image}
             alt={logo.alt}

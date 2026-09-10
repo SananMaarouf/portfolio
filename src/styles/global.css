@@ -1,63 +1,90 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=Young+Serif&display=swap');
-
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @import "tw-animate-css";
-@custom-variant dark (&:where(.dark, .dark *));
 
-:root {
+/* ═══════════════════════════════════════════════════════════════════════
+   1. THEME CONTRACT
+   ─────────────────────────────────────────────────────────────────────
+   Five themes, selected by <html data-theme="…">. Rules that keep this
+   working — read before adding a 6th theme:
+
+   • EVERY block declares EVERY token listed under light. The theme picker
+     renders swatches as nested <span data-theme="x">; a nested scope
+     inherits from the *enclosing* theme, not :root, so a missing token
+     leaks the parent theme's value into the swatch.
+   • Selectors must stay bare [data-theme="x"] (never html[data-theme]) so
+     they also match those nested swatch spans.
+   • ORDER IS LOAD-BEARING. `:root` and `[data-theme="x"]` tie on
+     specificity (0,1,0); for <html data-theme="dark"> both match and the
+     later rule wins. Light shares the :root block (no-JS / bad-value
+     fallback) and MUST stay first; the others MUST come after it.
+   • --chart-* and --sidebar-* were removed on purpose (no consumers).
+     Re-add them here and in @theme inline if you `npx shadcn add` a
+     component that expects them.
+   • Fonts use a *-raw suffix so `@theme inline { --font-body: var(--font-body-raw) }`
+     doesn't reference itself.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root,
+[data-theme="light"] {
   --background: oklch(0.93 0.02 91.55);
   --foreground: oklch(0.27 0 0);
   --card: oklch(0.98 0.01 93.48);
   --card-foreground: oklch(0.19 0 0);
   --popover: oklch(1.00 0 0);
   --popover-foreground: oklch(0.27 0.02 99.70);
-  --primary: oklch(0.62 0.14 39.15);
+  /* L nudged 0.62 -> 0.575: white on the original terracotta was 3.86:1,
+     failing AA on every card and primary button. Now 4.65:1. */
+  --primary: oklch(0.575 0.14 39.15);
   --primary-foreground: oklch(1.00 0 0);
   --secondary: oklch(40.54% 0.00005 271.152);
   --secondary-foreground: oklch(1.00 0 0);
   --muted: oklch(0.93 0.02 91.55);
-  --muted-foreground: oklch(0.61 0.01 91.49);
+  /* L 0.61 -> 0.51: muted text (dates, captions) was 3.09:1, failing AA.
+     Now 4.69:1. */
+  --muted-foreground: oklch(0.51 0.01 91.49);
   --accent: oklch(0.92 0.01 87.42);
   --accent-foreground: oklch(0.27 0.02 99.70);
   --destructive: oklch(0.19 0 0);
+  --destructive-foreground: oklch(1.00 0 0);
   --border: oklch(0.88 0.01 100.76);
   --input: oklch(0.76 0.02 96.91);
   --ring: oklch(0.59 0.17 252.92);
-  --chart-1: oklch(0.56 0.13 42.95);
-  --chart-2: oklch(0.69 0.16 290.29);
-  --chart-3: oklch(0.88 0.03 91.64);
-  --chart-4: oklch(0.88 0.04 298.21);
-  --chart-5: oklch(0.56 0.13 41.94);
-  --sidebar: oklch(0.97 0.01 93.49);
-  --sidebar-foreground: oklch(0.36 0.01 106.85);
-  --sidebar-primary: oklch(0.62 0.14 39.15);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.92 0.01 87.42);
-  --sidebar-accent-foreground: oklch(0.33 0 0);
-  --sidebar-border: oklch(0.94 0 0);
-  --sidebar-ring: oklch(0.77 0 0);
+  --overlay: rgb(46 42 38 / 0.45);
 
-  --font-sans: 'Silkscreen', sans-serif;
-  --font-serif: "Young Serif","Geist", serif;
-  --font-mono: "Geist Mono", monospace;
-  --font-system: "Press Start 2P", system-ui;
-  
+  --art-bg: #F4E4C8;
+  --art-ink: #572E20;
+  --art-accent: #CB6543;
+
+  --shadow-color: 0 0 0;
+  --shadow-alpha: 0.10;
+  --surface-raised: 0 0 #0000;
+  --surface-sunken: 0 0 #0000;
+
+  --chrome-bg: none;
+  --chrome-fg: inherit;
+  --chrome-border: 0 solid transparent;
+
+  --effect-display: none;
+  --effect-overlay: none;
+  --effect-blend: normal;
+  --text-glow: none;
+
+  --font-body-raw: "Young Serif", serif;
+  --font-display-raw: "Young Serif", serif;
+  --font-ui-raw: "Young Serif", serif;
+  --font-mono-raw: "JetBrains Mono", ui-monospace, monospace;
+
   --radius: 0.5rem;
-  
-  --shadow-2xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.05);
-  --shadow-xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.05);
-  --shadow-sm: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 1px 2px -1px oklch(0.00 0 0 / 0.10);
-  --shadow: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 1px 2px -1px oklch(0.00 0 0 / 0.10);
-  --shadow-md: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 2px 4px -1px oklch(0.00 0 0 / 0.10);
-  --shadow-lg: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 4px 6px -1px oklch(0.00 0 0 / 0.10);
-  --shadow-xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 8px 10px -1px oklch(0.00 0 0 / 0.10);
-  --shadow-2xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.25);
-  
+
+  --prose-body: var(--foreground);
+  --prose-headings: var(--card-foreground);
+  --prose-links: var(--primary);
+  --prose-code-bg: var(--muted);
+  --prose-borders: var(--border);
 }
 
-.dark {
+[data-theme="dark"] {
   --background: oklch(0.27 0 0);
   --foreground: oklch(0.81 0.01 93.53);
   --card: oklch(0.27 0 0);
@@ -65,7 +92,8 @@
   --popover: oklch(0.31 0 0);
   --popover-foreground: oklch(0.92 0 0);
   --primary: oklch(0.67 0.13 38.92);
-  --primary-foreground: oklch(1.00 0 0);
+  /* was white (3.4:1 on the orange primary — fails AA); near-black passes */
+  --primary-foreground: oklch(0.15 0.01 60);
   --secondary: oklch(0.98 0.01 93.48);
   --secondary-foreground: oklch(0.31 0 0);
   --muted: oklch(0.22 0 0);
@@ -73,33 +101,231 @@
   --accent: oklch(0.21 0.01 88.79);
   --accent-foreground: oklch(0.97 0.01 93.49);
   --destructive: oklch(0.64 0.21 25.39);
+  /* white here was 3.72:1; near-black is 5.30:1 */
+  --destructive-foreground: oklch(0.15 0.01 60);
   --border: oklch(0.36 0.01 106.85);
   --input: oklch(0.43 0.01 99.03);
   --ring: oklch(0.59 0.17 252.92);
-  --chart-1: oklch(0.56 0.13 42.95);
-  --chart-2: oklch(0.69 0.16 290.29);
-  --chart-3: oklch(0.21 0.01 88.79);
-  --chart-4: oklch(0.31 0.05 289.74);
-  --chart-5: oklch(0.56 0.13 41.94);
-  --sidebar: oklch(0.24 0 0);
-  --sidebar-foreground: oklch(0.81 0.01 93.53);
-  --sidebar-primary: oklch(0.33 0 0);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.17 0 0);
-  --sidebar-accent-foreground: oklch(0.81 0.01 93.53);
-  --sidebar-border: oklch(0.94 0 0);
-  --sidebar-ring: oklch(0.77 0 0);
-  
-  --shadow-2xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.05);
-  --shadow-xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.05);
-  --shadow-sm: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 1px 2px -1px oklch(0.00 0 0 / 0.10);
-  --shadow: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 1px 2px -1px oklch(0.00 0 0 / 0.10);
-  --shadow-md: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 2px 4px -1px oklch(0.00 0 0 / 0.10);
-  --shadow-lg: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 4px 6px -1px oklch(0.00 0 0 / 0.10);
-  --shadow-xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 8px 10px -1px oklch(0.00 0 0 / 0.10);
-  --shadow-2xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.25);
+  --overlay: rgb(0 0 0 / 0.60);
+
+  --art-bg: #F4E4C8;
+  --art-ink: #572E20;
+  --art-accent: #CB6543;
+
+  --shadow-color: 0 0 0;
+  --shadow-alpha: 0.10;
+  --surface-raised: 0 0 #0000;
+  --surface-sunken: 0 0 #0000;
+
+  --chrome-bg: none;
+  --chrome-fg: inherit;
+  --chrome-border: 0 solid transparent;
+
+  --effect-display: none;
+  --effect-overlay: none;
+  --effect-blend: normal;
+  --text-glow: none;
+
+  --font-body-raw: "Young Serif", serif;
+  --font-display-raw: "Young Serif", serif;
+  --font-ui-raw: "Young Serif", serif;
+  --font-mono-raw: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius: 0.5rem;
+
+  --prose-body: var(--foreground);
+  --prose-headings: var(--card-foreground);
+  --prose-links: var(--primary);
+  --prose-code-bg: var(--muted);
+  --prose-borders: var(--border);
 }
 
+/* Tokyo Night */
+[data-theme="nerd"] {
+  --background: #1A1B26;
+  --foreground: #C0CAF5;
+  --card: #1F2335;
+  --card-foreground: #C0CAF5;
+  --popover: #24283B;
+  --popover-foreground: #C0CAF5;
+  --primary: #7AA2F7;
+  --primary-foreground: #16161E;
+  --secondary: #BB9AF7;
+  --secondary-foreground: #16161E;
+  --muted: #292E42;
+  --muted-foreground: #9AA5CE;
+  --accent: #7DCFFF;
+  --accent-foreground: #16161E;
+  --destructive: #F7768E;
+  --destructive-foreground: #16161E;
+  --border: #2F334D;
+  --input: #414868;
+  --ring: #7DCFFF;
+  --overlay: rgb(13 13 20 / 0.70);
+
+  --art-bg: #1F2335;
+  --art-ink: #C0CAF5;
+  --art-accent: #9ECE6A;
+
+  --shadow-color: 0 0 0;
+  --shadow-alpha: 0.55;
+  --surface-raised: 0 0 #0000;
+  --surface-sunken: 0 0 #0000;
+
+  --chrome-bg: none;
+  --chrome-fg: inherit;
+  --chrome-border: 0 solid transparent;
+
+  --effect-display: none;
+  --effect-overlay: none;
+  --effect-blend: normal;
+  --text-glow: none;
+
+  --font-body-raw: "JetBrains Mono", ui-monospace, monospace;
+  --font-display-raw: "JetBrains Mono", ui-monospace, monospace;
+  --font-ui-raw: "JetBrains Mono", ui-monospace, monospace;
+  --font-mono-raw: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius: 0.25rem;
+
+  --prose-body: #C0CAF5;
+  --prose-headings: #C0CAF5;
+  --prose-links: #7DCFFF;
+  --prose-code-bg: #292E42;
+  --prose-borders: #2F334D;
+}
+
+/* Phosphor CRT */
+[data-theme="terminal"] {
+  --background: #000000;
+  --foreground: #33FF33;
+  --card: #050D05;
+  --card-foreground: #33FF33;
+  --popover: #071007;
+  --popover-foreground: #33FF33;
+  --primary: #33FF33;
+  --primary-foreground: #001100;
+  --secondary: #00A82D;
+  --secondary-foreground: #001100;
+  --muted: #001A00;
+  --muted-foreground: #1FA31F;
+  --accent: #0B2E0B;
+  --accent-foreground: #7CFF7C;
+  --destructive: #FF3B30;
+  --destructive-foreground: #1A0000;
+  --border: #1B5E20;
+  --input: #124012;
+  --ring: #33FF33;
+  --overlay: rgb(0 0 0 / 0.80);
+
+  --art-bg: #000000;
+  --art-ink: #33FF33;
+  --art-accent: #00A82D;
+
+  --shadow-color: 51 255 51;
+  --shadow-alpha: 0;
+  --surface-raised: 0 0 #0000;
+  --surface-sunken: 0 0 #0000;
+
+  --chrome-bg: none;
+  --chrome-fg: inherit;
+  --chrome-border: 0 solid transparent;
+
+  --effect-display: block;
+  --effect-overlay: repeating-linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 0) 0px,
+    rgb(0 0 0 / 0) 2px,
+    rgb(0 0 0 / 0.34) 2px,
+    rgb(0 0 0 / 0.34) 4px
+  );
+  --effect-blend: normal;
+  --text-glow: 0 0 6px rgb(51 255 51 / 0.45), 0 0 18px rgb(51 255 51 / 0.18);
+
+  --font-body-raw: "JetBrains Mono", ui-monospace, monospace;
+  --font-display-raw: "JetBrains Mono", ui-monospace, monospace;
+  --font-ui-raw: "JetBrains Mono", ui-monospace, monospace;
+  --font-mono-raw: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius: 0;
+
+  --prose-body: #33FF33;
+  --prose-headings: #7CFF7C;
+  --prose-links: #00E5FF;
+  --prose-code-bg: #001A00;
+  --prose-borders: #1B5E20;
+}
+
+/* Windows 95 / 98 */
+[data-theme="retro95"] {
+  --background: #C0C0C0;
+  --foreground: #000000;
+  --card: #C0C0C0;
+  --card-foreground: #000000;
+  --popover: #C0C0C0;
+  --popover-foreground: #000000;
+  --primary: #000080;
+  --primary-foreground: #FFFFFF;
+  --secondary: #C0C0C0;
+  --secondary-foreground: #000000;
+  --muted: #C0C0C0;
+  /* authentic #808080 is 2.2:1 on the gray — reserved for :disabled only */
+  --muted-foreground: #4D4D4D;
+  --accent: #000080;
+  --accent-foreground: #FFFFFF;
+  --destructive: #AA0000;
+  --destructive-foreground: #FFFFFF;
+  --border: #808080;
+  --input: #FFFFFF;
+  --ring: #000000;
+  --overlay: rgb(0 0 0 / 0.35);
+
+  --art-bg: #C0C0C0;
+  --art-ink: #000000;
+  --art-accent: #000080;
+
+  --shadow-color: 0 0 0;
+  --shadow-alpha: 0;
+  --surface-raised:
+    inset -1px -1px 0 0 #000000,
+    inset 1px 1px 0 0 #FFFFFF,
+    inset -2px -2px 0 0 #808080,
+    inset 2px 2px 0 0 #DFDFDF;
+  --surface-sunken:
+    inset 1px 1px 0 0 #000000,
+    inset -1px -1px 0 0 #FFFFFF,
+    inset 2px 2px 0 0 #808080,
+    inset -2px -2px 0 0 #DFDFDF;
+
+  --chrome-bg: linear-gradient(90deg, #000080 0%, #0A6FB0 100%);
+  --chrome-fg: #FFFFFF;
+  --chrome-border: 1px solid #000000;
+
+  --effect-display: none;
+  --effect-overlay: none;
+  --effect-blend: normal;
+  --text-glow: none;
+
+  --font-body-raw: Tahoma, "MS Sans Serif", Verdana, Geneva, sans-serif;
+  --font-display-raw: Tahoma, "MS Sans Serif", Verdana, Geneva, sans-serif;
+  --font-ui-raw: Tahoma, "MS Sans Serif", Verdana, Geneva, sans-serif;
+  --font-mono-raw: "Courier New", Courier, monospace;
+
+  --radius: 0;
+
+  --prose-body: #000000;
+  --prose-headings: #000000;
+  --prose-links: #0000EE;
+  --prose-code-bg: #FFFFFF;
+  --prose-borders: #808080;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   2. TAILWIND NAMESPACE BRIDGE
+   `inline` is required: utilities compile to var(--x) resolved at the
+   element, which is what lets nested [data-theme] swatches work.
+   Any NEW color token needs a line here or its utility silently won't exist.
+   ═══════════════════════════════════════════════════════════════════════ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -116,93 +342,262 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --color-overlay: var(--overlay);
+  --color-art-bg: var(--art-bg);
+  --color-art-ink: var(--art-ink);
+  --color-art-accent: var(--art-accent);
 
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-  --font-serif: var(--font-serif);
-  --font-system: var(--font-system);
+  --font-body: var(--font-body-raw);
+  --font-display: var(--font-display-raw);
+  --font-ui: var(--font-ui-raw);
+  --font-mono: var(--font-mono-raw);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  /* Multiplicative so --radius: 0 means zero everywhere (the old
+     calc(var(--radius) + 4px) left 4px corners on square themes).
+     With --radius: 0.5rem these equal Tailwind's defaults exactly. */
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 3);
 
-  --shadow-2xs: var(--shadow-2xs);
-  --shadow-xs: var(--shadow-xs);
-  --shadow-sm: var(--shadow-sm);
-  --shadow: var(--shadow);
-  --shadow-md: var(--shadow-md);
-  --shadow-lg: var(--shadow-lg);
-  --shadow-xl: var(--shadow-xl);
-  --shadow-2xl: var(--shadow-2xl);
+  /* Same shapes as before; colour/alpha now come from two theme primitives */
+  --shadow-xs: 0 1px 3px 0 rgb(var(--shadow-color) / calc(var(--shadow-alpha) * 0.5));
+  --shadow-sm: 0 1px 3px 0 rgb(var(--shadow-color) / var(--shadow-alpha)),
+               0 1px 2px -1px rgb(var(--shadow-color) / var(--shadow-alpha));
+  --shadow-md: 0 1px 3px 0 rgb(var(--shadow-color) / var(--shadow-alpha)),
+               0 2px 4px -1px rgb(var(--shadow-color) / var(--shadow-alpha));
+  --shadow-lg: 0 1px 3px 0 rgb(var(--shadow-color) / var(--shadow-alpha)),
+               0 4px 6px -1px rgb(var(--shadow-color) / var(--shadow-alpha));
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   3. UTILITIES
+   ═══════════════════════════════════════════════════════════════════════ */
 @utility container {
   margin-inline: auto;
   padding-inline: 2rem;
 }
 
-@layer components {
-  button {
-    cursor: pointer;
-  }
-  [class*="border"] {
-    @apply border-border;
-  }
-}
-
+/* ═══════════════════════════════════════════════════════════════════════
+   4. BASE
+   ═══════════════════════════════════════════════════════════════════════ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-serif antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+    text-shadow: var(--text-glow);
     overflow-x: hidden;
     scrollbar-gutter: stable;
-    letter-spacing: var(--tracking-normal);
+  }
+  h1, h2 {
+    font-family: var(--font-display);
+  }
+  code, pre, kbd, samp {
+    font-family: var(--font-mono);
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   5. TOKEN-DRIVEN PRIMITIVES (unlayered on purpose so they beat @layer)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Typography plugin: it sets --tw-prose-* inside its own layered .prose
+   rule; this unlayered block wins the custom-property cascade so every
+   theme drives article colours from its tokens. The invert set is mirrored
+   so a stray `prose-invert` is a no-op rather than a regression. */
+.prose {
+  --tw-prose-body: var(--prose-body);
+  --tw-prose-headings: var(--prose-headings);
+  --tw-prose-lead: var(--prose-body);
+  --tw-prose-links: var(--prose-links);
+  --tw-prose-bold: var(--prose-headings);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--muted-foreground);
+  --tw-prose-hr: var(--prose-borders);
+  --tw-prose-quotes: var(--prose-headings);
+  --tw-prose-quote-borders: var(--prose-borders);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-kbd: var(--prose-headings);
+  --tw-prose-kbd-shadows: var(--shadow-color);
+  --tw-prose-code: var(--prose-headings);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: var(--prose-code-bg);
+  --tw-prose-th-borders: var(--prose-borders);
+  --tw-prose-td-borders: var(--prose-borders);
+
+  --tw-prose-invert-body: var(--prose-body);
+  --tw-prose-invert-headings: var(--prose-headings);
+  --tw-prose-invert-lead: var(--prose-body);
+  --tw-prose-invert-links: var(--prose-links);
+  --tw-prose-invert-bold: var(--prose-headings);
+  --tw-prose-invert-counters: var(--muted-foreground);
+  --tw-prose-invert-bullets: var(--muted-foreground);
+  --tw-prose-invert-hr: var(--prose-borders);
+  --tw-prose-invert-quotes: var(--prose-headings);
+  --tw-prose-invert-quote-borders: var(--prose-borders);
+  --tw-prose-invert-captions: var(--muted-foreground);
+  --tw-prose-invert-kbd: var(--prose-headings);
+  --tw-prose-invert-kbd-shadows: var(--shadow-color);
+  --tw-prose-invert-code: var(--prose-headings);
+  --tw-prose-invert-pre-code: var(--foreground);
+  --tw-prose-invert-pre-bg: var(--prose-code-bg);
+  --tw-prose-invert-th-borders: var(--prose-borders);
+  --tw-prose-invert-td-borders: var(--prose-borders);
+}
+
+/* Win95 3D bevels. A plain class, not a Tailwind shadow utility: v4's
+   shadow-* compose through --tw-shadow slots and do colour substitution,
+   which a four-part inset string doesn't survive reliably. Inert (no
+   shadow) in every theme but retro95. */
+.surface-raised { box-shadow: var(--surface-raised); }
+.surface-sunken { box-shadow: var(--surface-sunken); }
+
+/* Navbar chrome (Win95 title bar). background-image, not background, so
+   it never fights the bg-background/95 scroll treatment in other themes. */
+.chrome-bar {
+  background-image: var(--chrome-bg);
+  color: var(--chrome-fg);
+  border-bottom: var(--chrome-border);
+}
+
+/* Full-viewport effect overlay (terminal scanlines). Lives on <html>
+   because ClientRouter replaces <body> wholesale on every navigation.
+   display is token-gated so the other themes create no fixed layer at all. */
+html::after {
+  content: "";
+  display: var(--effect-display);
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  background-image: var(--effect-overlay);
+  mix-blend-mode: var(--effect-blend);
+  view-transition-name: crt-overlay;
+}
+
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.86; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="terminal"]::after {
+    animation: crt-flicker 4s steps(2) infinite;
+  }
+}
+
+/* Hero illustration (SananArt.astro). Keyframes live here rather than
+   inside the inlined SVG so they're page-scoped and reduced-motion aware. */
+@keyframes sanan-meridian-spin {
+  0%   { transform: scaleX(1); }
+  25%  { transform: scaleX(0); }
+  50%  { transform: scaleX(-1); }
+  75%  { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+@keyframes sanan-globe-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+.sanan-art .sanan-globe-m {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sanan-meridian-spin 6s linear infinite;
+  will-change: transform;
+}
+.sanan-art .sanan-globe-m1 { animation-delay: -2s; }
+.sanan-art .sanan-globe-m2 { animation-delay: -1s; }
+.sanan-art .sanan-globe {
+  animation: sanan-globe-bounce 2s ease-in-out infinite;
+}
+
 .hide-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 
+/* Neutralise Radix's scroll-lock padding shift */
 html body[data-scroll-locked] {
   overflow-y: scroll !important;
   --removed-body-scroll-bar-size: 0 !important;
   margin-right: 0 !important;
 }
 
-@layer base {
-  button:not(:disabled),
-  [role="button"]:not(:disabled) {
-    cursor: pointer;
-  }
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
+/* ═══════════════════════════════════════════════════════════════════════
+   6. RETRO95 ESCAPE HATCH — the only theme-specific selectors in the file.
+   Keyed on data-chrome attributes that components carry unconditionally;
+   they mean nothing in any other theme.
+   ═══════════════════════════════════════════════════════════════════════ */
+[data-theme="retro95"] :focus-visible {
+  outline: 1px dotted currentColor;
+  outline-offset: -4px;
+  --tw-ring-shadow: 0 0 #0000;
+}
+[data-theme="retro95"] :disabled {
+  color: #808080;
+  text-shadow: 1px 1px 0 #FFFFFF;
+}
+/* Title bar: window buttons are raised gray squares, logo text is white */
+[data-theme="retro95"] .chrome-bar [data-slot="button"] {
+  background-color: var(--background);
+  color: var(--foreground);
+  box-shadow: var(--surface-raised);
+}
+[data-theme="retro95"] .chrome-bar [data-slot="button"]:hover {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+[data-theme="retro95"] .chrome-bar [data-slot="button"]:active {
+  box-shadow: var(--surface-sunken);
+}
+[data-theme="retro95"] [data-chrome="title"] svg text {
+  fill: var(--chrome-fg);
+}
+[data-theme="retro95"] [data-chrome="title"] {
+  font-weight: 700;
+}
+/* Start button: bold, extra raised, depresses on click */
+[data-theme="retro95"] [data-chrome="start-button"] {
+  font-weight: 700;
+  padding-inline: 0.5rem;
+  width: auto;
+}
+[data-theme="retro95"] [data-chrome="start-button"]:active,
+[data-theme="retro95"] [data-chrome="start-button"][data-state="open"] {
+  box-shadow: var(--surface-sunken);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+/* Sunken field (menus, sheets) */
+[data-theme="retro95"] [data-chrome="field"] {
+  box-shadow: var(--surface-sunken);
+  background-color: var(--input);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   7. REDUCED MOTION — static scanlines stay (texture, not motion);
+   flicker, the hero globe, and all transitions stop.
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -1,9 +1,9 @@
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ThemeSwitcherMobile } from "./theme-switcher";
+import { ThemePickerMobile } from "./theme-picker";
 import type { MobileNavProps } from "../../../types/navbar";
 import { LanguageSwitcherMobile } from "./language-switcher";
-import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 export const MobileNav = ({ menu, locale, localizeUrl, linkedinUrl }: MobileNavProps) => {
   return (
@@ -20,6 +20,9 @@ export const MobileNav = ({ menu, locale, localizeUrl, linkedinUrl }: MobileNavP
           {/* Slide-out menu content */}
           <SheetContent className="overflow-y-auto">
             <SheetHeader>
+              <SheetTitle className="sr-only">
+                {locale === "nb" ? "Meny" : "Menu"}
+              </SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-2 p-4">
               {/* Mobile menu links */}
@@ -39,7 +42,7 @@ export const MobileNav = ({ menu, locale, localizeUrl, linkedinUrl }: MobileNavP
               {/* Mobile action buttons */}
               <section className="flex flex-col gap-3">
                 <LanguageSwitcherMobile currentLocale={locale} />
-                <ThemeSwitcherMobile locale={locale} />
+                <ThemePickerMobile locale={locale} />
                 <Button asChild>
                   <a href={linkedinUrl} target="_blank" rel="noopener noreferrer">LinkedIn</a>
                 </Button>

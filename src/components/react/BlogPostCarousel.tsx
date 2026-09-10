@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
 import { motion } from "motion/react";
+import { cardVariants } from "@/lib/card-variants";
 import type { Post } from "../../../types/post";
 
 interface BlogPostCarouselProps {
@@ -13,8 +13,6 @@ interface BlogPostCarouselProps {
 }
 
 export default function BlogPostCarousel({ posts, t, locale }: BlogPostCarouselProps) {
-	const ref = useRef<HTMLDivElement>(null);
-
 	// Early return if no posts
 	if (!posts || posts.length === 0) {
 		return (
@@ -71,16 +69,11 @@ export default function BlogPostCarousel({ posts, t, locale }: BlogPostCarouselP
 				)}
 
 				{/* horizontal slider */}
-				<div className="overflow-x-scroll flex gap-6 py-4 scrollbar-hide">
+				<div className="overflow-x-scroll flex gap-6 py-4 hide-scrollbar">
 					{visiblePosts.map((post, index) => {
 						return (
 							/* the post card */
-							<motion.div key={post.slug.current} className="
-							group shrink-0 w-72 h-56 
-							bg-primary text-primary-foreground rounded-xl
-							hover:bg-secondary hover:text-secondary-foreground
-							transition-all duration-300 ease-linear flex flex-col
-							">
+							<motion.div key={post.slug.current} className={cardVariants()}>
 								<a href={getPostUrl(post.slug.current)} className="w-full h-full flex flex-col relative">
 									<div className="p-4 grow">
 										{/* post number and date */}
@@ -106,7 +99,7 @@ export default function BlogPostCarousel({ posts, t, locale }: BlogPostCarouselP
 
 					{/* See all posts card */}
 					{hasMore && (
-						<motion.div className="group shrink-0 w-72 h-56 bg-card hover:bg-foreground rounded-xl text-card-foreground transition-all duration-300 ease-linear dark:hover:bg-card-foreground dark:hover:text-card flex">
+						<motion.div className={cardVariants({ tone: "card" })}>
 							<a href={allPostsUrl} className="w-full h-full flex flex-col justify-center items-center gap-2 p-4">
 								<p className="text-xl font-semibold">{t.see_all}</p>
 								<span className="text-sm opacity-80">{posts.length} total</span>

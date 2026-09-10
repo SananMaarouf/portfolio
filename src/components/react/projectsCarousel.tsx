@@ -1,11 +1,9 @@
-import React, { useRef } from "react";
 import { motion } from "motion/react";
+import { cardVariants, techTagVariants } from "@/lib/card-variants";
 import type { Project, ProjectsCarouselProps } from "../../../types/project";
 
 
 export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarouselProps) {
-	const ref = useRef<HTMLDivElement>(null);
-
 	// Early return if no projects
 	if (!projects || projects.length === 0) {
 		return (
@@ -62,16 +60,11 @@ export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarous
 				</motion.p>
 
 				{/* horizontal slider */}
-				   <div className="overflow-x-scroll flex gap-6 py-4 scrollbar-hide">
+				   <div className="overflow-x-scroll flex gap-6 py-4 hide-scrollbar">
 					{visibleProjects.map((project, index) => {
 						return (
 							/* the project card */
-							<motion.div key={project._id} className="
-							group shrink-0 w-72 h-56 
-							bg-primary text-primary-foreground rounded-xl
-							hover:bg-secondary hover:text-secondary-foreground
-							transition-all duration-300 ease-linear flex flex-col
-							">
+							<motion.div key={project._id} className={cardVariants()}>
 								<a href={getProjectUrl(project.slug.current)} className="w-full h-full flex flex-col relative">
 									<div className="p-4 grow">
 										{/* project number and type */}
@@ -95,13 +88,9 @@ export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarous
 									{project.technologies && project.technologies.length > 0 && (
 										<div className="flex flex-wrap-reverse gap-1 p-1 mr-1 mb-1 h-14 justify-end">
 											{project.technologies.slice(0, 4).map((tech: string, i: number) => (
-												<span key={i} className="
-													bg-primary-foreground text-primary 
-													transition-all duration-300  
-													h-6 text-xs rounded-md p-1 
-													group-hover:bg-primary group-hover:text-primary-foreground">
+												<span key={i} className={techTagVariants()}>
 													{tech}
-													</span>
+												</span>
 												))}
 										</div>
 									)}
@@ -112,9 +101,7 @@ export default function ProjectsCarousel({ projects, t, locale }: ProjectsCarous
 
 					{/* See all projects card */}
 					{hasMore && (
-						<motion.div className="
-							shrink-0 w-72 h-56 
-							bg-primary text-primary-foreground rounded-xl">
+						<motion.div className={cardVariants()}>
 							<a href={allProjectsUrl} className="w-full h-full flex flex-col justify-center items-center gap-2 p-4">
 								<p className="text-xl font-semibold text-center">{t.see_all}</p>
 							</a>

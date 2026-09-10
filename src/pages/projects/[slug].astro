@@ -94,7 +94,7 @@ if (!project) {
 
 		{
 			project.body && (
-				<section class="prose text-foreground dark:prose-invert mb-8" aria-label="Project content">
+				<section class="prose mb-8" aria-label="Project content">
 					<PortableText value={project.body} />
 				</section>
 			)
@@ -112,7 +112,7 @@ if (!project) {
 									alt={image.alt || image.title || project.title}
 								/>
 								{image.title && (
-									<figcaption class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+									<figcaption class="text-sm text-muted-foreground mt-2">
 										{image.title}
 									</figcaption>
 								)}

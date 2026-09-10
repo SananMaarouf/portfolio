@@ -93,7 +93,7 @@ if (!project) {
 
 		{
 			project.body && (
-				<section class="prose text-foreground dark:prose-invert mb-8" aria-label="Prosjektinnhold">
+				<section class="prose mb-8" aria-label="Prosjektinnhold">
 					<PortableText value={project.body} />
 				</section>
 			)
@@ -110,7 +110,7 @@ if (!project) {
 									node={image}
 									alt={image.alt || image.title || project.title}
 								/>
-								{image.title && <figcaption class="text-sm  mt-2">{image.title}</figcaption>}
+								{image.title && <figcaption class="text-sm text-muted-foreground mt-2">{image.title}</figcaption>}
 							</figure>
 						))}
 					</div>
