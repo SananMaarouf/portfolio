@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "portfolio",
+  "compatibility_date": "2026-10-27",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  },
+  "observability": {
+    "enabled": true
+  }
+  // Custom domain cutover — uncomment to serve sanan.no from the Worker.
+  // Deploying with this enabled takes over the apex DNS record and issues the
+  // cert automatically, which also means Cloudflare stops proxying to the VPS.
+  // Test on https://portfolio.<account>.workers.dev first (default workers.dev
+  // subdomain is on), then uncomment and redeploy.
+  //
+  // "routes": [{ "pattern": "sanan.no", "custom_domain": true }]
+}

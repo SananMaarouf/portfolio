@@ -1,0 +1,14 @@
+# Response headers for Cloudflare Workers static assets.
+# Parsed at deploy time from the assets directory (dist/), so this file lives in
+# public/ and is copied verbatim by Astro. Not served as an asset itself.
+# Mirrors the rules the nginx config used to apply.
+
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# Astro emits fingerprinted bundles under /_astro/ — safe to cache forever.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
