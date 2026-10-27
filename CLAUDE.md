@@ -40,9 +40,34 @@ There is no test suite or lint script configured in `package.json`.
 
 ### Frontend composition
 
-- Astro components (`.astro`) handle server-rendered layout/content (`Landing.astro`, `Projects.astro`, `Posts.astro`, `PortableText.astro`, `SanityImage.astro`, `InternalLink.astro`).
-- Interactive pieces are React islands under `src/components/react/` (navbar, language switcher, theme switcher, carousels, settings menu).
+- Astro components (`.astro`) handle server-rendered layout/content (`Landing.astro`, `Projects.astro`, `Posts.astro`, `PortableText.astro`, `SanityImage.astro`, `InternalLink.astro`, `SananArt.astro` — the hero illustration, inlined so its `--art-*` colours follow the theme).
+- Interactive pieces are React islands under `src/components/react/` (navbar, language switcher, theme picker, carousels, settings menu). The whole navbar is a single `client:load transition:persist` island.
 - `src/components/ui/` holds shadcn/ui primitives (config in `components.json`, style `new-york`, Tailwind v4 via `@tailwindcss/vite`). Path alias `@/*` → `src/*` (see `tsconfig.json`), matching shadcn aliases.
+
+### Theming
+
+Five themes — `light`, `dark`, `nerd` (Tokyo Night), `terminal` (phosphor CRT), `retro95` (Windows 95) — selected by `data-theme` on `<html>`. All of it lives in `src/styles/global.css`; components never branch on the theme.
+
+**Adding a theme** is one `[data-theme="x"] { … }` block plus one entry in `THEMES` (`src/lib/theme.ts`). Four rules make that work, and breaking any of them fails silently:
+
+1. **Every block declares every token.** The theme picker renders swatches as nested `<span data-theme="…">`, and a nested scope inherits from the *enclosing* theme rather than `:root` — a token you omit leaks the parent theme's value. The blocks are currently 44 tokens each; `awk '/^\[data-theme=/{n=0} /^  --/{n++} /^}/{print n}'` over the file should print the same number five times.
+2. **Selectors stay bare `[data-theme="x"]`** — never `html[data-theme=…]` or `:root[data-theme=…]`. The higher specificity would stop matching the swatch spans.
+3. **Source order is load-bearing.** `:root` and `[data-theme="x"]` tie at specificity (0,1,0), so for `<html data-theme="dark">` both match and only order decides. Light shares the `:root` block (it is the no-JS and bad-value fallback) and must stay first.
+4. **New `--color-*` tokens need a matching line in `@theme inline`**, or the Tailwind utility silently won't exist.
+
+Themes carry more than colour: fonts (`--font-body/display/ui/mono`, via `*-raw` names to avoid a self-referential `@theme inline` cycle), `--radius` (the derived steps are *multiplicative*, so `--radius: 0` means zero everywhere), shadows (two primitives, `--shadow-color`/`--shadow-alpha`, from which the `--shadow-*` steps derive — `--shadow-alpha: 0` removes soft shadows wholesale), and per-theme effects.
+
+**Effects and chrome** are token-driven with inert defaults, so no theme has to undo another's:
+- `html::after` is a full-viewport overlay gated by `--effect-display` (terminal's scanlines). It lives on `<html>` because `ClientRouter` replaces `<body>` entirely on every navigation.
+- `.surface-raised` / `.surface-sunken` render Win95 bevels from `--surface-*` and are no-ops elsewhere. Deliberately plain classes, not Tailwind `shadow-*` utilities, whose `--tw-shadow` composition mangles four-part inset strings.
+- `.chrome-bar` (`--chrome-bg/fg/border`) is the retro95 title bar.
+- The only theme-specific selectors are one `[data-theme="retro95"] [data-chrome=…]` block; components carry those `data-chrome` attributes unconditionally.
+
+**Application layer** — one resolver, one writer:
+- `src/layouts/Layout.astro` holds an `is:inline` pre-paint script (via `define:vars`, so the theme list isn't duplicated). It resolves localStorage → `prefers-color-scheme` and stamps `data-theme` before first paint. The OS-derived seed is deliberately **not** persisted, so an undecided visitor keeps tracking their OS. It also stamps `event.newDocument` on `astro:before-swap` — `ClientRouter` copies `<html>` attributes from the incoming document, so handling only `astro:after-swap` leaves a themeless frame on every client-side navigation.
+- `src/lib/theme-store.ts` is a module-level store read through `useSyncExternalStore` (`src/hooks/use-theme.ts`). It owns user-initiated changes only and seeds itself from the DOM attribute the inline script already set. `getServerSnapshot` returns `null` so static HTML renders no active row — that is what removes the pre-hydration flash, and omitting it fails the SSG build. A module store rather than React context because Astro islands are separate React roots.
+
+`--chart-*` and `--sidebar-*` were removed (no consumers); re-add them to the theme blocks *and* `@theme inline` if you `npx shadcn add` something that needs them. `src/lib/card-variants.ts` holds the one card recipe shared by both carousels and the four index pages — a plain `cva` module so `.astro` frontmatter can import it too.
 
 ### Deployment
 

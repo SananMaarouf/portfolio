@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { Navbar } from '@/components/react/navbar';
 import { ClientRouter } from 'astro:transitions';
+import { THEMES, DEFAULT_THEME, THEME_STORAGE_KEY } from '@/lib/theme';
 
 interface Props {
 	lang?: string;
@@ -35,17 +36,58 @@ const menu = menuTranslations[locale];
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 		<link rel="preload" as="image" href="/sanan1.webp" fetchpriority="high" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Young+Serif&display=swap"
+		/>
 		<meta name="generator" content={Astro.generator} />
 		<title>{pageTitle}</title>
 		<ClientRouter />
-		<script is:inline>
-			function applyTheme() {
-				const theme = localStorage.getItem('theme') ||
-					(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-				document.documentElement.classList.toggle('dark', theme === 'dark');
-			}
-			applyTheme();
-			document.addEventListener('astro:after-swap', applyTheme);
+		{/*
+		  Pre-paint theme application. Must stay is:inline (define:vars implies it)
+		  so it runs synchronously before first paint — this is the only thing
+		  preventing a flash of the wrong theme.
+		*/}
+		<script is:inline define:vars={{ THEMES, DEFAULT_THEME, THEME_STORAGE_KEY }}>
+			(function () {
+				// define:vars emits top-level consts; a re-exec would be a SyntaxError.
+				if (window.__themeInit) return;
+				window.__themeInit = true;
+
+				function resolveTheme() {
+					var stored = null;
+					try {
+						stored = localStorage.getItem(THEME_STORAGE_KEY);
+					} catch (e) {
+						// Safari private mode throws on access
+					}
+					if (THEMES.indexOf(stored) !== -1) return stored;
+					// Never persisted: an undecided visitor keeps tracking their OS.
+					try {
+						return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+					} catch (e) {
+						return DEFAULT_THEME;
+					}
+				}
+
+				function applyTheme(root) {
+					root.setAttribute('data-theme', resolveTheme());
+				}
+
+				applyTheme(document.documentElement);
+
+				// ClientRouter copies <html> attributes from the incoming document,
+				// so stamp the new document before the swap (no themeless frame) …
+				document.addEventListener('astro:before-swap', function (event) {
+					applyTheme(event.newDocument.documentElement);
+				});
+				// … and re-assert afterwards as a fallback.
+				document.addEventListener('astro:after-swap', function () {
+					applyTheme(document.documentElement);
+				});
+			})();
 		</script>
 	</head>
 	<body class="bg-background text-foreground transition-colors duration-300 ease-linear">

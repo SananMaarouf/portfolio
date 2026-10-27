@@ -7,7 +7,7 @@ interface CircularLogoProps {
   homeUrl: string;
 }
 
-export const CircularLogo = ({ title, image, alt, homeUrl }: CircularLogoProps) => {
+export const CircularLogo = ({ title, image, alt, homeUrl, ...rest }: CircularLogoProps & Record<string, unknown>) => {
   const [scrollRotation, setScrollRotation] = useState(0);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export const CircularLogo = ({ title, image, alt, homeUrl }: CircularLogoProps) 
   }, []);
 
   return (
-    <a href={homeUrl} className="group shrink-0">
+    <a href={homeUrl} className="group shrink-0" {...rest}>
       <div className="relative w-32 h-24 flex items-center justify-center">
         {/* SVG Circular text - rotates on scroll */}
         <svg

@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getProjects } from "@/utils/sanity";
+import { cardVariants, techTagVariants } from "@/lib/card-variants";
 
 const lang = "en";
 const projects = await getProjects(lang);
@@ -32,21 +33,14 @@ const getProjectUrl = (slug: string) => `/projects/${slug}`;
 <Layout lang={lang}>
 	<section
 		id="projects"
-		class="my-10 text-foreground md:mx-auto relative w-full bg-transparent scroll-mt-24"
+		class="my-10 text-foreground md:mx-auto relative w-full xl:w-11/12 bg-transparent scroll-mt-24"
 	>
 		<h1 class="text-3xl mb-6">{t.title}</h1>
 		{
 			projects && projects.length > 0 ? (
 				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 					{projects.map((project, index) => (
-						<div
-							class="
-							group shrink-0  h-56 
-							bg-primary text-primary-foreground rounded-xl
-							hover:bg-secondary hover:text-secondary-foreground
-							transition-all duration-300 ease-linear flex flex-col
-							"
-						>
+						<div class={cardVariants({ size: "grid" })}>
 							<a
 								href={getProjectUrl(project.slug.current)}
 								class="w-full h-full flex flex-col relative"
@@ -73,15 +67,7 @@ const getProjectUrl = (slug: string) => `/projects/${slug}`;
 										{project.technologies
 											.slice(0, 4)
 											.map((tech: string, i: number) => (
-												<span
-													class="
-													bg-primary-foreground text-primary 
-													transition-all duration-300  
-													h-6 text-xs rounded-md p-1 
-													group-hover:bg-primary group-hover:text-primary-foreground"
-												>
-													{tech}
-												</span>
+												<span class={techTagVariants()}>{tech}</span>
 											))}
 									</div>
 								)}
