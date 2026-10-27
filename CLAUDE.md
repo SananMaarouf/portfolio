@@ -71,14 +71,25 @@ Themes carry more than colour: fonts (`--font-body/display/ui/mono`, via `*-raw`
 
 ### Deployment
 
-CI/CD is intentionally split into a build stage and a separate trigger stage (see README "Known issues"/"Features" and `.github/workflows/`):
+Hosted on **Cloudflare Workers static assets**, built and deployed by **Cloudflare Workers Builds** (Cloudflare's git integration). There is no GitHub Actions deploy pipeline, no container image and no VPS. `wrangler.jsonc` points the Worker at `./dist`, `npm run build` is the only build step, and nothing runs at request time — every page is prerendered HTML.
 
-1. `deploy.yml` — on push to `master`, builds a Docker image (`Dockerfile`, multi-arg build with `PUBLIC_*` env vars baked in) and pushes it to Docker Hub (`latest`, `master`, and commit-SHA tags). Also triggerable via `repository_dispatch` (`sanity-update`) so Sanity content changes can kick off a rebuild.
-2. `trigger-deploy.yml` — called by `deploy.yml`'s `trigger-deployment` job after a successful build (`workflow_call`); hits a Dokploy deploy webhook (through Cloudflare Access, using `CF_ACCESS_CLIENT_ID`/`SECRET`) so Dokploy pulls the freshly pushed image. It has no `repository_dispatch` trigger of its own, so it can only ever run after `deploy.yml` — never directly off the Sanity webhook.
+Worker Builds settings (dashboard → Workers & Pages → `portfolio` → Settings → Build):
 
-The build-then-trigger ordering isn't just pipeline plumbing — it's required. The Astro site uses **static output**, and `Dockerfile` is a multi-stage build: the `builder` stage runs `npm run build`, which executes every GROQ query against Sanity at build time and renders all pages to static HTML into `/app/dist`. The final `runtime` stage starts fresh from `nginxinc/nginx-unprivileged:alpine` and copies in only `/app/dist` — no Node, no source, no live Sanity connection at runtime, just nginx serving flat files. So a Sanity content edit only reaches production by rebuilding the image (baking in fresh content) and pushing it; if Dokploy redeployed without a rebuild it would just restart the container with the same stale files. This also explains why this split exists at all: the original all-in-one-VPS setup pinned CPU/RAM to 100% during `astro build` on a low-power VPS, so the heavy `builder` stage was moved to GitHub's runners, leaving Dokploy to do a cheap `docker pull` + restart of the small nginx image.
+- Build command `npm run build`, deploy command `npx wrangler deploy`, root directory `/`, production branch `master`. A push to `master` triggers a build.
+- Build-time environment variables: `SANITY_PROJECT_ID`, `SANITY_DATASET`, `PUBLIC_PAGE_TITLE`, `PUBLIC_NAVBAR_TITLE`, `PUBLIC_COPYRIGHT_HOLDER`. Build-time only — no secrets are bound to the Worker, because there is no Worker script.
+- Sanity content → production: the Studio webhook targets the Worker's **deploy hook URL** (Settings → Build → Deploy hooks). Hitting it re-runs the build, which re-queries Sanity and redeploys.
 
-Local Docker usage is via `docker-compose.yml` / `Dockerfile` directly, using the same `PUBLIC_*` build args.
+**A content edit must go through a rebuild.** Redeploying the same build would ship stale HTML; that is why the webhook triggers a build rather than a deploy.
+
+`public/_headers` carries the security and cache headers — Workers parses it out of the assets directory (Astro copies `public/` into `dist/`). `/_astro/*` gets a one-year immutable cache because those filenames are fingerprinted.
+
+Routing behaviour worth knowing: `assets.not_found_handling: "404-page"` serves Astro's `dist/404.html` with a 404 status, and Wrangler's default `auto-trailing-slash` html handling 307-redirects `/projects` → `/projects/`, matching what the old `try_files` did.
+
+The apex custom domain is deliberately **commented out** in `wrangler.jsonc` so builds land on `portfolio.<account>.workers.dev` until the DNS cutover is a deliberate act. Either uncomment the `routes` entry (the next build then claims the `sanan.no` record and issues the cert) or attach the Custom Domain in the dashboard.
+
+Local: `npm run preview:cf` = build + `wrangler dev` (real Workers runtime); `npm run deploy:cf` deploys from a machine with a wrangler login.
+
+**Self-hosting is preserved on the `self-host` branch** — a snapshot of `master` at migration time with `Dockerfile`, `docker-compose.yml`, `nginx.conf`, `.dockerignore` and the old `deploy.yml` / `trigger-deploy.yml` (Docker Hub → Dokploy). Those files are deleted on `master`. Going back means resetting to that branch, restoring the Dokploy deploy hook and Cloudflare Access secrets, and pointing the Sanity webhook at Dokploy again.
 
 ### Environment variables
 
@@ -87,4 +98,4 @@ Two parallel sets of Sanity env vars are used for different consumers — don't 
 - `SANITY_PROJECT_ID` / `SANITY_DATASET` — read server-side in `astro.config.mjs` via `loadEnv` for the `@sanity/astro` integration.
 - `SANITY_STUDIO_PROJECT_ID` / `SANITY_STUDIO_DATASET` / `SANITY_STUDIO_PROJECT_NAME` — used by `sanity.config.ts` for the Studio itself.
 
-See `.env.example` for the full list, including Dokploy/Cloudflare Access deploy secrets.
+See `.env.example` for the full list. `CLOUDFLARE_ACCOUNT_ID` is needed locally for manual `wrangler` runs; the API token only lives in CI (`.env`/`.dev.vars` are gitignored).
